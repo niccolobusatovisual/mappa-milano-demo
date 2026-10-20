@@ -1,12 +1,12 @@
-// Scena three.js di Milano 3D (v2): luce comune, tetti, alberi. Si carica solo da zoom medio-alto, insieme a three.
+// Scena three.js di Milano 3D (v2): luce comune, tetti. Si carica solo da zoom medio-alto, insieme a three.
 // Convenzione di tutte le geometrie (come i monumenti): metri, +x = est, +y = su, +z = sud; origine al centro della cella.
-// Nessun dato viene scaricato qui: i tetti si costruiscono dalle impronte gia' in memoria (edifici-grandi/minori), gli alberi da alberi.bin.
+// Nessun dato viene scaricato qui: i tetti si costruiscono dalle impronte gia' in memoria (edifici-grandi/minori).
 
 export const FX = 6e-6 * 111320 * Math.cos(45.46 * Math.PI / 180), FY = 4.2e-6 * 110574;   // metri per unita' di griglia (~0,47)
 export const CELLA = 500;                                                                    // unita' di griglia per cella (~235 m)
 export const SOLE = [-0.54, 0.643, 0.54];     // verso il sole: ovest, alto, sud (azimut 225, polare 50 come la luce di MapLibre)
 
-/* ---------------- luce: la stessa formula di fill-extrusion di MapLibre, cosi' volumi, monumenti, tetti e alberi hanno lo stesso tono ----------------
+/* ---------------- luce: la stessa formula di fill-extrusion di MapLibre, cosi' volumi, monumenti e tetti hanno lo stesso tono ----------------
    directional = mix(1 - I, max(1 - luminanza + I, 1), dot(n, sole)); in piu' un leggero scurimento alla base delle pareti (come le fasce 0-8 m). */
 export function materiali(THREE, { int = 0.26 } = {}) {
   const vs = `
@@ -43,20 +43,9 @@ export function materiali(THREE, { int = 0.26 } = {}) {
     }`;
   const comuni = () => ({ uSole: { value: new THREE.Vector3(...SOLE).normalize() }, uInt: { value: int }, uLuce: { value: new THREE.Vector3(1, 1, 1) }, uBase: { value: 1 } });
   const mk = (defines, colore, extra = {}) => new THREE.ShaderMaterial({ vertexShader: vs, fragmentShader: fs, defines, uniforms: { ...comuni(), uColor: { value: new THREE.Vector3(...colore) } }, ...extra });
-  // ombra morbida di un albero a terra: disco con bordo sfumato, colore freddo (ombra leggermente azzurrata)
-  const ombraAlbero = new THREE.ShaderMaterial({
-    transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
-    vertexShader: `varying vec2 vP; void main(){ vP = position.xz; vec4 p = vec4(position,1.0);
-      #ifdef USE_INSTANCING
-        p = instanceMatrix * p;
-      #endif
-      gl_Position = projectionMatrix * modelViewMatrix * p; }`,
-    fragmentShader: `varying vec2 vP; void main(){ float r = length(vP); float a = 0.24 * (1.0 - smoothstep(0.25, 1.0, r)); gl_FragColor = vec4(0.22, 0.27, 0.38, a); }` });
   return {
     monumento: (hex) => mk({}, hex),
     tetti: () => { const m = mk({ USE_COLOR_ATTR: '' }, [1, 1, 1], { side: THREE.DoubleSide }); m.uniforms.uInt.value = Math.max(int, 0.32); return m; },      // falde: piu' contrasto fra lato al sole e in ombra, cosi' si legge la forma
-    alberi: () => mk({}, [1, 1, 1]),
-    ombraAlbero,
   };
 }
 
@@ -143,34 +132,4 @@ export function tettiCella(THREE, ed, idxs, ox, oy, maxN = 1e9) {
   g.setAttribute('col', new THREE.BufferAttribute(new Uint8Array(col.filter((_, k) => k % 4 !== 3)), 3, true));
   g.computeBoundingSphere();
   return { geom: g, n };
-}
-
-/* ---------------- alberi ---------------- */
-export function chioma(THREE) {            // chioma: icosaedro (20 facce) schiacciato, poggiato a terra, il centro a ~0,95 del raggio
-  const g = new THREE.IcosahedronGeometry(1, 0).toNonIndexed();
-  g.scale(1, 0.92, 1); g.translate(0, 0.92, 0);
-  return g;
-}
-export function disco(THREE) {
-  const g = new THREE.CircleGeometry(1, 10); g.rotateX(-Math.PI / 2); g.translate(0, 0.12, 0); return g;
-}
-const VERDI = [[206, 223, 190], [196, 216, 178], [212, 227, 197], [189, 210, 172]];
-export function alberiCella(THREE, matCh, matOm, geoCh, geoDisco, xs, ys, ox, oy, seed) {
-  const n = xs.length; if (!n) return null;
-  const ch = new THREE.InstancedMesh(geoCh, matCh, n), om = new THREE.InstancedMesh(geoDisco, matOm, n);
-  const m = new THREE.Matrix4(), q = new THREE.Quaternion(), pos = new THREE.Vector3(), sc = new THREE.Vector3(), col = new Float32Array(n * 3);
-  for (let i = 0; i < n; i++) {
-    const r = hash(seed * 7919 + i), rr = 2.1 + 1.9 * r;                   // raggio della chioma 2,1-4,0 m: altezza totale circa 4-7 m (stilizzato, il DBT non da' altezza)
-    const x = xs[i] * 4 * FX - ox, y = ys[i] * 4 * FY - oy;
-    pos.set(x, 0, -y); sc.set(rr, rr * (0.85 + 0.3 * hash(seed * 31 + i)), rr);
-    m.compose(pos, q, sc); ch.setMatrixAt(i, m);
-    pos.set(x + rr * 0.55, 0, -(y + rr * 0.55)); sc.set(rr * 1.35, 1, rr * 1.1);   // ombra a terra verso nord-est
-    m.compose(pos, q, sc); om.setMatrixAt(i, m);
-    const v = VERDI[(hash(seed * 13 + i) * VERDI.length) | 0], t = 0.94 + 0.1 * hash(seed * 17 + i);
-    col[i * 3] = Math.min(1, v[0] * t / 255); col[i * 3 + 1] = Math.min(1, v[1] * t / 255); col[i * 3 + 2] = Math.min(1, v[2] * t / 255);
-  }
-  ch.instanceColor = new THREE.InstancedBufferAttribute(col, 3);
-  ch.instanceMatrix.needsUpdate = om.instanceMatrix.needsUpdate = true;
-  ch.frustumCulled = om.frustumCulled = false; om.renderOrder = 2;
-  return { ch, om, n };
 }

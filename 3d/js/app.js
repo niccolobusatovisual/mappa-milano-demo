@@ -2,8 +2,8 @@
 /* ============================================================================================
    Milano 3D, versione FINAL: dati cotti (B) + monumenti (D) + pin accessibili (A+B).
    File: dati/edifici-grandi.bin (sempre), dati/edifici-minori.bin + dati/ombre.bin (su richiesta da zoom ~13),
-         dati/sostituiti.bin, dati/base.bin, dati/luoghi.json, dati/landmarks.json, dati/alberi.bin, glb/*.glb e three (solo da zoom medio).
-   v2: ombre portate calcolate qui dalle impronte (nessun file), tetti e alberi nel layer three (js/scena.js), giro del gestionale ({type:'route'}).
+         dati/sostituiti.bin, dati/base.bin, dati/luoghi.json, dati/landmarks.json, glb/*.glb e three (solo da zoom medio).
+   v2: ombre portate calcolate qui dalle impronte (nessun file), tetti nel layer three (js/scena.js), giro del gestionale ({type:'route'}).
    Nessun servizio di terzi a runtime: niente tile, glifi, font remoti.
    ============================================================================================ */
 const T0 = performance.now();
@@ -16,13 +16,13 @@ const TOUCH = P.get('lod') ? P.get('lod') === 'basso' : matchMedia('(pointer: co
 /* ---------- soglie del LOD (documentate in RISULTATI.md) ---------- */
 const LOD = TOUCH
   ? { minoriZoom: 14.4, ombreZoom: 15.0, bande: false, monZoom: 13.4, dpr: Math.min(devicePixelRatio || 1, 2), aa: false,
-      tettiZoom: 16.4, alberiZoom: 16.2, maxCelle: 26, maxAlberi: 5000, aoZoom: 16 }
+      tettiZoom: 16.4, maxCelle: 26, aoZoom: 16 }
   : { minoriZoom: 13.6, ombreZoom: 14.0, bande: true, monZoom: 12.8, dpr: devicePixelRatio || 1, aa: true,
-      tettiZoom: 15.8, alberiZoom: 15.6, maxCelle: 70, maxAlberi: 14000, aoZoom: 15 };
+      tettiZoom: 15.8, maxCelle: 70, aoZoom: 15 };
 
-const CELLA = 500;      // unita' di griglia per cella di tetti/alberi (~235 m), come in js/scena.js
+const CELLA = 500;      // unita' di griglia per cella di tetti (~235 m), come in js/scena.js
 const nuovoStore = () => ({ off: [], px: [], py: [], h: [], roof: [], nr: [], cells: new Map() });
-const LUCE = { int: 0.23 };       // intensita' della luce: stessa per volumi MapLibre e per tre (monumenti, tetti, alberi), vedi scena.js
+const LUCE = { int: 0.23 };       // intensita' della luce: stessa per volumi MapLibre e per tre (monumenti, tetti), vedi scena.js
 const BANDA_H = 8;       // m: sotto questa quota le pareti sono piu' scure (sfumatura alla base)
 
 const GLIFO_SCURO = '#0b0e13';     // glifo scuro dove il bianco non arriva a 4,5:1 sul colore della categoria (biblioteche, spettacolo, musei, associazioni, sport)
@@ -42,7 +42,7 @@ const CATS = [
 const CAT_IDX = Object.fromEntries(CATS.map((c, i) => [c[0], i]));
 const $ = s => document.querySelector(s);
 const stato = { cats: new Set(CATS.map((_, i) => i)), mun: null, q: '', luoghi: [], byId: new Map(), filtrati: [], sel: null,
-  ed: nuovoStore(), alberi: null, minori: 'no', monumenti: 'no', alberiSt: 'no', route: [], routeIds: [], routePos: new Map(), routeMk: new Map(), routeVista: false, monLayer: null, caricati: new Set(),
+  ed: nuovoStore(), minori: 'no', monumenti: 'no', route: [], routeIds: [], routePos: new Map(), routeMk: new Map(), routeVista: false, monLayer: null, caricati: new Set(),
   done: new Set(), hp: new Set(), hidden: new Set(), ids: null, nBase: 0 };   // done/hp/hidden/ids: dal gestionale (messaggi 'state' e 'filter')
 const dbg = {};
 const msgs = [];                                   // messaggi inviati al genitore (utile ai test)
@@ -250,32 +250,14 @@ async function caricaMonumenti() {
     const THREE = await import('three');       // prima three, poi il resto: pochi download in parallelo (un server di sviluppo semplice con coda corta altrimenti resetta le connessioni)
     const [{ GLTFLoader }, { createLandmarksLayer }, scena] = await Promise.all([import('three/addons/loaders/GLTFLoader.js'), import('./landmarks-layer.js'), import('./scena.js')]);
     const lista = stato.lmLista;
-    const fonti = { get edifici() { return stato.minori === 'si' ? stato.ed : null; }, get alberi() { return stato.alberi; } };
+    const fonti = { get edifici() { return stato.minori === 'si' ? stato.ed : null; } };
     const layer = createLandmarksLayer({ THREE, GLTFLoader, maplibregl, landmarks: lista, baseUrl: location.href, minZoom: LOD.monZoom, scena, fonti, luce: LUCE,
-      opz: { tettiZoom: LOD.tettiZoom, alberiZoom: LOD.alberiZoom, maxCelle: LOD.maxCelle, maxAlberi: LOD.maxAlberi },
+      opz: { tettiZoom: LOD.tettiZoom, maxCelle: LOD.maxCelle },
       onLoad: (m) => { stato.caricati.add(lista.findIndex(x => x.id === m.id)); mappa.setFilter('sost-attesa', ['!', ['in', ['get', 'm'], ['literal', [...stato.caricati]]]]); },
       onFail: (m) => console.warn('ripiego sul volume semplice per', m.id) });
     mappa.addLayer(layer);
     stato.monLayer = layer; stato.monumenti = 'si'; dbg.monumenti_ms = Math.round(performance.now() - t);
   } catch (e) { console.error(e); stato.monumenti = 'no'; }
-}
-
-// alberi: Morton + delta + varint (vedi rigenera/build.py); celle come i tetti
-async function caricaAlberi() {
-  if (stato.alberiSt !== 'no') return; stato.alberiSt = 'in corso';
-  try {
-    const t = performance.now(), u8 = await scarica('dati/alberi.bin'), n = new DataView(u8.buffer).getUint32(0, true), cells = new Map();
-    let p = 4, cur = 0;
-    for (let i = 0; i < n; i++) {
-      let v = 0, sh = 1, b; do { b = u8[p++]; v += (b & 127) * sh; sh *= 128; } while (b & 128);
-      cur += v;
-      let x = 0, y = 0; for (let k = 0; k < 14; k++) { x |= ((cur >>> (2 * k)) & 1) << k; y |= ((cur >>> (2 * k + 1)) & 1) << k; }
-      const kk = Math.floor(x * 4 / CELLA) * 1024 + Math.floor(y * 4 / CELLA);
-      let a = cells.get(kk); if (!a) cells.set(kk, a = { x: [], y: [] }); a.x.push(x); a.y.push(y);
-    }
-    stato.alberi = { cells, n }; stato.alberiSt = 'si'; dbg.alberi_ms = Math.round(performance.now() - t); dbg.n_alberi = n;
-    mappa.triggerRepaint();
-  } catch (e) { console.error(e); stato.alberiSt = 'no'; }
 }
 
 let catena = Promise.resolve();
@@ -287,10 +269,9 @@ function inCoda(flag, f) {
 async function verificaLazy() {
   if (!stato.stile) return;
   const z = mappa.getZoom();
-  // i caricamenti su richiesta partono uno alla volta (catena di promesse): minori e ombre, poi alberi, poi three
+  // i caricamenti su richiesta partono uno alla volta (catena di promesse): minori e ombre, poi three
   if (stato.minori === 'no' && z >= LOD.minoriZoom - 1.0) inCoda('minori', caricaMinori);
-  if (stato.alberiSt === 'no' && z >= LOD.alberiZoom - 0.8) inCoda('alberiSt', caricaAlberi);
-  if (stato.monumenti === 'no' && z >= Math.min(LOD.tettiZoom, LOD.alberiZoom) - 0.8) inCoda('monumenti', caricaMonumenti);       // il layer three serve anche a tetti e alberi
+  if (stato.monumenti === 'no' && z >= LOD.tettiZoom - 0.8) inCoda('monumenti', caricaMonumenti);       // il layer three serve anche ai tetti
   if (stato.monumenti === 'no' && z >= LOD.monZoom - 0.6) {
     const lm_lista = stato.lmLista;
     const b = mappa.getBounds(), dx = (b.getEast() - b.getWest()) * 0.2, dy = (b.getNorth() - b.getSouth()) * 0.2;
