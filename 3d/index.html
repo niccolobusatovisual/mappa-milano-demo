@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Milano 3D</title>
+<meta name="description" content="Tutta Milano in 3D con edifici da dati aperti, monumenti modellati e i luoghi per categoria. Nessun servizio di terzi a runtime.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23f71e44%27/%3E%3Cpath d=%27M7 24V9l9 9 9-9v15%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+<link rel="preload" href="font/oswald-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="dati/edifici-grandi.bin" as="fetch" crossorigin>
+<link rel="stylesheet" href="vendor/maplibre-gl.css"><!-- MapLibre GL JS 5.6.0, copia locale (BSD-3) -->
+<script type="importmap">{"imports":{"three":"./vendor/three/three.module.min.js","three/addons/":"./vendor/three/addons/"}}</script>
+<style>
+@font-face{font-family:Oswald;src:url(font/oswald-latin.woff2) format("woff2");font-weight:200 700;font-display:swap}
+@font-face{font-family:Montserrat;src:url(font/montserrat-latin.woff2) format("woff2");font-weight:100 900;font-display:swap}
+:root{
+  --rosso:#f71e44; --rosso-scuro:#c8102e; --inchiostro:#1b1f27; --inchiostro-2:#4b5563; --carta:#ffffff;
+  --linea:#d9dde3; --fondo:#eceae6; --ombra:0 2px 12px rgba(20,24,31,.16); --focus:#1d4ed8;
+  --f-titoli:Oswald,"Arial Narrow",system-ui,sans-serif; --f-testo:Montserrat,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--fondo);font-family:var(--f-testo);color:var(--inchiostro);-webkit-text-size-adjust:100%;overflow:hidden}
+#mappa{position:fixed;inset:0}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.salta{position:fixed;z-index:30;left:12px;top:-60px;background:var(--inchiostro);color:#fff;padding:12px 16px;border-radius:10px;font-weight:600;text-decoration:none;min-height:44px;display:flex;align-items:center}
+.salta:focus{top:12px}
+
+/* barra in alto */
+.barra{position:fixed;z-index:5;top:max(12px,env(safe-area-inset-top));left:12px;right:68px;display:flex;gap:8px;align-items:flex-start;pointer-events:none;flex-wrap:wrap}
+.barra>*{pointer-events:auto}
+.titolo{background:var(--carta);border-radius:var(--r);box-shadow:var(--ombra);padding:0 14px;min-height:44px;display:flex;align-items:center;gap:10px}
+.titolo b{font:600 19px/1 var(--f-titoli);letter-spacing:.04em;text-transform:uppercase}
+.titolo b i{font-style:normal;color:var(--rosso-scuro)}
+.titolo small{font-size:12px;color:var(--inchiostro-2);font-weight:500}
+.cerca{position:relative;flex:1 1 220px;max-width:340px}
+.cerca label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.cerca input{width:100%;min-height:44px;border:0;border-radius:var(--r);box-shadow:var(--ombra);background:var(--carta);padding:0 14px;font-size:15px;font-weight:500}
+.cerca input::placeholder{color:#5f6877}
+.risultati{position:absolute;top:50px;left:0;right:0;background:var(--carta);border-radius:var(--r);box-shadow:var(--ombra);margin:0;padding:6px;list-style:none;max-height:50vh;overflow:auto}
+.risultati[hidden]{display:none}
+.risultati button{display:flex;width:100%;min-height:44px;align-items:center;gap:10px;text-align:left;background:none;border:0;border-radius:8px;padding:6px 8px;font-size:14px;font-weight:600}
+.risultati button:hover,.risultati button[aria-selected=true]{background:#eef0f3}
+.risultati small{display:block;color:var(--inchiostro-2);font-weight:500;font-size:12px}
+.risultati .vuoto{padding:10px 12px;font-size:14px;color:var(--inchiostro-2)}
+.dot{flex:none;width:12px;height:12px;border-radius:50%}
+
+/* comandi a destra */
+.comandi{position:fixed;z-index:5;right:12px;top:max(12px,env(safe-area-inset-top));display:flex;flex-direction:column;gap:8px}
+.btn{width:44px;height:44px;border:0;border-radius:var(--r);background:var(--carta);box-shadow:var(--ombra);display:grid;place-items:center;font:600 14px var(--f-titoli);letter-spacing:.04em}
+.btn:hover{background:#f4f5f7}
+.btn[aria-pressed=true]{background:var(--inchiostro);color:#fff}
+.btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.maplibregl-ctrl-top-right{display:none}
+.maplibregl-ctrl-bottom-right{right:0}
+
+/* dock in basso a sinistra: filtri ed elenco */
+.dock{position:fixed;z-index:6;left:12px;bottom:max(28px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px;align-items:flex-start;max-width:min(380px,calc(100vw - 24px))}
+.dock-bar{display:flex;gap:8px}
+.tasto{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:0;border-radius:var(--r);background:var(--carta);box-shadow:var(--ombra);font-weight:700;font-size:14px}
+.tasto[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--inchiostro),var(--ombra)}
+.tasto svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.tasto em{font-style:normal;font-weight:600;font-size:12px;color:var(--inchiostro-2)}
+.pannello{background:var(--carta);border-radius:var(--r);box-shadow:var(--ombra);padding:10px;width:100%;max-height:min(58vh,460px);overflow:auto;overscroll-behavior:contain}
+.pannello[hidden]{display:none}
+.pannello h2{margin:0 0 8px;font:600 15px var(--f-titoli);letter-spacing:.05em;text-transform:uppercase}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px 0 8px;border:2px solid var(--linea);border-radius:22px;background:#fff;font-size:13px;font-weight:600}
+.chip[aria-pressed=true]{border-color:var(--c);background:color-mix(in srgb,var(--c) 9%,#fff)}
+.chip[aria-pressed=false]{color:#4b5563}
+.chip[aria-pressed=false] .dot{background:#9aa1ac!important}
+.chip em{font-style:normal;font-weight:500;color:var(--inchiostro-2);font-size:12px}
+.chip svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.chip .dot{width:26px;height:26px;display:grid;place-items:center}
+.riga-filtri{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin:10px 0 0}
+.campo{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--inchiostro-2)}
+.campo select{min-height:44px;border:2px solid var(--linea);border-radius:12px;background:#fff;padding:0 10px;font-size:14px;font-weight:600;color:var(--inchiostro)}
+.secondario{min-height:44px;padding:0 14px;border:2px solid var(--linea);border-radius:22px;background:#fff;font-weight:700;font-size:13px}
+.elenco{list-style:none;margin:0;padding:0}
+.elenco li+li{border-top:1px solid #edeff2}
+.elenco button{display:flex;width:100%;min-height:48px;align-items:center;gap:10px;text-align:left;background:none;border:0;border-radius:8px;padding:6px 6px;font-size:14px;font-weight:600}
+.elenco button:hover{background:#f1f3f5}
+.elenco small{display:block;color:var(--inchiostro-2);font-weight:500;font-size:12px}
+.elenco-nota{margin:0 0 8px;font-size:12px;color:var(--inchiostro-2);font-weight:500}
+.piu{margin-top:8px;width:100%}
+
+/* pin (DOM: focalizzabili) */
+.pin{width:44px;height:56px;padding:0;border:0;background:none;display:block}   /* position: la mette già .maplibregl-marker (absolute) */
+.pin::after{content:"";position:absolute;left:11px;bottom:-1px;width:22px;height:7px;border-radius:50%;background:radial-gradient(closest-side,rgba(20,24,31,.38),rgba(20,24,31,0));z-index:-1}
+.pin .in{display:block;width:44px;height:56px;transform-origin:50% 100%;transition:transform .16s cubic-bezier(.3,1.4,.5,1)}
+.pin:hover .in{transform:scale(1.1)}
+.pin.sel{z-index:3}
+.pin.sel .in{transform:scale(1.45)}
+.pin svg{display:block;width:44px;height:56px;overflow:visible}
+.pin:focus-visible{outline:none}
+.pin:focus-visible .in{filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 3px var(--focus)) drop-shadow(0 0 3px var(--focus))}
+.clu{border:0;padding:0;border-radius:50%;background:#fff;color:var(--inchiostro);font:600 16px/1 var(--f-titoli);letter-spacing:.02em;
+  box-shadow:0 0 0 3px var(--rosso),0 4px 10px rgba(31,36,48,.28);display:flex;align-items:center;justify-content:center;transition:transform .16s ease-out;font-variant-numeric:tabular-nums;min-width:44px;min-height:44px}
+.clu:hover{transform:scale(1.08)}
+.clu:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+
+/* scheda del luogo */
+.scheda{position:fixed;z-index:8;left:50%;bottom:max(20px,env(safe-area-inset-bottom));transform:translate(-50%,0);width:min(400px,calc(100vw - 24px));
+  background:#fff;border-radius:18px;box-shadow:0 10px 40px rgba(31,36,48,.24),0 1px 3px rgba(31,36,48,.12);padding:16px 56px 14px 16px;transition:transform .22s ease-out,opacity .22s ease-out}
+.scheda[hidden]{display:block;opacity:0;transform:translate(-50%,24px);pointer-events:none;visibility:hidden}
+.scheda:focus{outline:none}
+.scheda .cat{display:flex;align-items:center;gap:8px;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--inchiostro-2)}
+.scheda .cat i{width:12px;height:12px;border-radius:50%}
+.scheda h2{margin:6px 0 2px;font:500 23px/1.2 var(--f-titoli);letter-spacing:.01em}
+.scheda p{margin:0 0 10px;color:var(--inchiostro-2);font-size:14px;font-weight:500}
+.scheda a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:12px;background:var(--inchiostro);color:#fff;font-weight:700;font-size:14px;text-decoration:none}
+.scheda .chiudi{position:absolute;right:6px;top:6px;width:44px;height:44px;border:0;background:none;border-radius:12px;display:grid;place-items:center}
+.scheda .chiudi:hover{background:#f1f3f5}
+.scheda .chiudi svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
+@media (max-width:1100px){body.scheda-aperta .dock{visibility:hidden}}
+body.senza-scheda .scheda{display:none!important}   /* ?scheda=0: la scheda del luogo la mostra il gestionale che incorpora la mappa */
+body.senza-scheda.scheda-aperta .dock{visibility:visible}
+
+/* caricamento */
+#carico{position:fixed;inset:0;z-index:20;background:var(--fondo);display:grid;place-items:center;transition:opacity .35s}
+#carico.via{opacity:0;pointer-events:none}
+#carico .box{width:min(340px,calc(100vw - 48px));text-align:center}
+#carico h1{font:600 30px var(--f-titoli);letter-spacing:.06em;text-transform:uppercase;margin:0 0 14px}
+#carico h1 i{font-style:normal;color:var(--rosso-scuro)}
+#carico p{margin:12px 0 0;font-size:14px;font-weight:500;color:var(--inchiostro-2);min-height:1.4em}
+.barra-p{height:6px;border-radius:3px;background:#d3d7dd;overflow:hidden}
+.barra-p>i{display:block;height:100%;width:8%;background:var(--rosso);border-radius:3px;transition:width .3s}
+#carico .err{color:#b42318;font-weight:600}
+#carico .riprova{margin-top:12px;min-height:44px;padding:0 18px;border:0;border-radius:22px;background:var(--rosso-scuro);color:#fff;font-weight:700}
+.maplibregl-ctrl-attrib{font-family:var(--f-testo);font-size:11px}
+.maplibregl-ctrl-attrib a{color:#2b3340}
+#dbg{position:fixed;z-index:9;right:70px;bottom:28px;background:rgba(27,31,39,.9);color:#fff;font:500 12px/1.4 var(--f-testo);padding:8px 10px;border-radius:8px;display:none;white-space:pre}
+@media (max-width:640px){.titolo small{display:none}.barra{right:68px}.dock{bottom:max(40px,env(safe-area-inset-bottom))}.maplibregl-ctrl-bottom-right{bottom:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<a class="salta" href="#btn-elenco">Vai all'elenco testuale dei luoghi</a>
+<div id="mappa" aria-label="Mappa 3D di Milano con i luoghi. Le stesse informazioni sono nell'elenco dei luoghi."></div>
+<div id="annuncio" class="sr" role="status" aria-live="polite"></div>
+
+<div class="barra">
+  <div class="titolo"><b>Milano <i>3D</i></b><small id="nedif"></small></div>
+  <div class="cerca">
+    <label for="q">Cerca un luogo o una via</label>
+    <input id="q" type="search" placeholder="Cerca un luogo o una via" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="ris" aria-autocomplete="list">
+    <ul class="risultati" id="ris" role="listbox" aria-label="Risultati della ricerca" hidden></ul>
+  </div>
+</div>
+
+<div class="comandi">
+  <button class="btn" id="b3d" aria-pressed="true" aria-label="Vista inclinata 3D" title="Vista inclinata 3D">3D</button>
+  <button class="btn" id="bnord" aria-label="Rimetti il nord in alto" title="Nord in alto"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l5 15-5-3-5 3z"/></svg></button>
+  <button class="btn" id="bmilano" aria-label="Inquadra tutta Milano" title="Tutta Milano"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  <button class="btn" id="bpiu" aria-label="Avvicina" title="Avvicina"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button class="btn" id="bmeno" aria-label="Allontana" title="Allontana"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+</div>
+
+<div class="dock">
+  <section class="pannello" id="p-filtri" aria-labelledby="t-filtri" hidden>
+    <h2 id="t-filtri">Filtri</h2>
+    <div class="chips" id="chips" role="group" aria-label="Categorie"></div>
+    <div class="riga-filtri">
+      <label class="campo">Municipio
+        <select id="s-mun"><option value="">Tutti</option></select>
+      </label>
+      <button class="secondario" id="b-azzera" type="button">Azzera filtri</button>
+    </div>
+  </section>
+  <section class="pannello" id="p-elenco" aria-labelledby="t-elenco" hidden>
+    <h2 id="t-elenco">Elenco dei luoghi</h2>
+    <p class="elenco-nota" id="elenco-nota"></p>
+    <ul class="elenco" id="elenco"></ul>
+    <button class="secondario piu" id="b-piu" type="button" hidden>Mostra altri luoghi</button>
+  </section>
+  <div class="dock-bar">
+    <button class="tasto" id="btn-filtri" type="button" aria-expanded="false" aria-controls="p-filtri">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M6 12h12M10 18h4"/></svg>Filtri <em id="n-filtri"></em>
+    </button>
+    <button class="tasto" id="btn-elenco" type="button" aria-expanded="false" aria-controls="p-elenco">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>Elenco <em id="n-elenco"></em>
+    </button>
+  </div>
+</div>
+
+<section class="scheda" id="scheda" tabindex="-1" role="dialog" aria-modal="false" aria-labelledby="s-nome" hidden>
+  <span class="cat"><i id="s-dot" aria-hidden="true"></i><span id="s-cat"></span></span>
+  <h2 id="s-nome"></h2>
+  <p id="s-via"></p>
+  <a id="s-go" target="_blank" rel="noopener">Indicazioni stradali</a>
+  <button class="chiudi" id="s-x" type="button" aria-label="Chiudi la scheda"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+</section>
+
+<div id="dbg"></div>
+
+<div id="carico" role="status" aria-live="polite">
+  <div class="box">
+    <h1>Milano <i>3D</i></h1>
+    <div class="barra-p" aria-hidden="true"><i id="pb"></i></div>
+    <p id="ptxt">Scarico gli edifici...</p>
+  </div>
+</div>
+
+<script src="vendor/maplibre-gl.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
