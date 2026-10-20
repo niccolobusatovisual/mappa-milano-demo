@@ -92,6 +92,10 @@ button{cursor:pointer}
 .pin::after{content:"";position:absolute;left:11px;bottom:-1px;width:22px;height:7px;border-radius:50%;background:radial-gradient(closest-side,rgba(20,24,31,.38),rgba(20,24,31,0));z-index:-1}
 .pin .in{display:block;width:44px;height:56px;transform-origin:50% 100%;transition:transform .16s cubic-bezier(.3,1.4,.5,1)}
 .pin:hover .in{transform:scale(1.1)}
+.pin.giro{z-index:2}
+.con-giro .pin:not(.giro):not(.sel),.con-giro .clu{opacity:.72!important}      /* con un giro attivo gli altri pin passano in secondo piano (le tappe numerate non si confondono con i numeri dei gruppi) */
+#giro-svg{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.pin.giro .in{transform:scale(1.12)}      /* tappa del giro: poco piu' grande, con il numero al posto dell'icona */
 .pin.sel{z-index:3}
 .pin.sel .in{transform:scale(1.45)}
 .pin svg{display:block;width:44px;height:56px;overflow:visible}
