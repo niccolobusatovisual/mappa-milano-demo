@@ -353,31 +353,163 @@ svg.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-wid
 }
 @media (max-width:420px){.plsum{grid-template-columns:repeat(2,1fr)}}
 @media (prefers-reduced-motion:no-preference){@media (max-width:820px){.pl{animation:plup .25s ease-out}}@keyframes plup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}}
+/* ---------- barra laterale, versione minimal (regole con #side: non toccano il pianificatore né la scheda) ---------- */
+#side{--sp:24px;padding-inline:max(var(--sp),env(safe-area-inset-left,0px)) var(--sp);padding-block:28px 32px;border-right:1px solid var(--line)}
+#side>*+*{margin-top:28px}
+#side h2{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 10px;font:500 12px/1.2 var(--f-body);text-transform:none;letter-spacing:.02em;color:var(--muted)}
+#side header{display:block}
+#side .brand{margin:0 0 20px;padding:0;border:0}
+#side .brand svg{height:22px}
+#side h1{margin:0;font:500 15px/1.2 var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+#side .tot{margin-top:14px}
+#side .tot-row{justify-content:flex-start;align-items:baseline;gap:10px}
+#side .tot-row b{font:600 56px/1 var(--f-display);letter-spacing:-.01em;color:var(--ink)}
+#side .tot-row span{font-size:14px;color:var(--muted)}
+#side .bar{height:3px;margin-top:12px;background:var(--line)}
+#side .bar i{background:var(--ink);border-radius:2px}
+#side .quick{gap:4px 18px;margin-top:10px}
+#side .quick:empty{display:none}
+#side .quick button{min-height:44px;padding:0;border:0;border-radius:0;font-size:13px;font-weight:500;color:var(--muted);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px}
+#side .quick button:hover{background:none;color:var(--ink);text-decoration-color:var(--ink)}
+#side .quick button b{color:var(--accent-text);font-weight:700}
+#side .sidepl{margin-top:16px;min-height:48px;border-radius:12px;font-size:15px;letter-spacing:.01em}
+#side .sidepl:hover{filter:brightness(.94)}
+#side .filters{gap:16px}
+#side .sbox label{display:block;margin:0 0 6px;font-size:12px;font-weight:500;color:var(--muted)}
+#side .sfield{position:relative}
+#side .sfield svg{position:absolute;left:12px;top:50%;margin-top:-9px;color:var(--muted);pointer-events:none}
+#side .search{min-height:44px;padding:10px 12px 10px 38px;border:0;border-radius:10px;background:var(--bg);font-size:14px}
+#side .search::placeholder{color:var(--muted);opacity:1}
+#side .search:focus-visible{outline:2px solid var(--accent-text);outline-offset:1px}
+#side .seg3{gap:2px;padding:3px;border:0;border-radius:12px;background:var(--bg);overflow:visible}
+#side .seg3 button{min-height:40px;padding:6px;border-radius:9px;background:none;font-size:13px;font-weight:500;color:var(--muted)}
+#side .seg3 button:hover{color:var(--ink)}
+#side .seg3 button[aria-pressed="true"]{background:var(--panel);color:var(--ink);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.14),inset 0 -2px 0 var(--accent)}
+#side .catbtn{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:0 4px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;text-align:left;font-size:13px}
+#side .catbtn .k{color:var(--muted);font-weight:500}
+#side .catbtn .v{margin-left:auto;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#side .catbtn .v.on{color:var(--accent-text)}
+#side .catbtn .chev{width:16px;height:16px;color:var(--muted);transition:none}
+#side .catbtn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+#side .chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 8px;margin-top:6px}
+#side .chp{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 8px;border:0;border-radius:8px;background:none;font-size:13px;font-weight:500;color:var(--ink);text-align:left}
+#side .chp.all{grid-column:1/-1}
+#side .chp .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#side .chp em{color:var(--muted)}
+#side .chp:hover{background:var(--bg)}
+#side .chp[aria-pressed="true"],#side .chp.all[aria-pressed="true"]{background:var(--bg);color:var(--accent-text);font-weight:700;box-shadow:inset 3px 0 0 var(--accent)}
+#side .chp[aria-pressed="true"] em,#side .chp.all[aria-pressed="true"] em{color:var(--accent-text);opacity:1}
+#side .chp[aria-pressed="true"] .dot{background:var(--c)!important}
+#side .mf summary::after{width:6px;height:6px;border-width:1.5px;margin:-3px 5px 0 0}
+#side .mf[open] summary::after{margin-top:3px}
+#side .mf summary{padding:0 4px;border-bottom:1px solid var(--line);font-weight:500}
+#side .mf[open] summary{border-bottom-color:transparent}
+#side .mf .seg3{margin:2px 0 4px}
+#side .mf summary em{background:var(--accent-text);color:#fff;font-weight:700}
+#side .zones{grid-template-columns:repeat(5,1fr);gap:6px}
+#side .zrow{align-items:center;justify-content:center;gap:6px;min-height:44px;padding:8px 4px 7px;border:0;border-radius:10px;background:var(--bg);text-align:center;box-shadow:none}
+#side .zrow:hover{background:color-mix(in srgb,var(--bg) 80%,var(--line))}
+#side .zrow b{font:500 17px/1 var(--f-display)}
+#side .zrow .bar{width:100%;height:3px;margin:0;background:var(--line)}
+#side .zrow .bar i{background:var(--ok)}
+#side .zrow[aria-pressed="true"]{background:var(--accent-text);color:var(--accent-ink);box-shadow:none}
+#side .zrow[aria-pressed="true"] .bar{background:rgba(255,255,255,.35)}
+#side .zrow[aria-pressed="true"] .bar i{background:#fff}
+#side .zrow.tutti b{font-size:13px;letter-spacing:.03em}
+#side .zcap{margin:10px 0 0;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+#side #eventiSlot:empty{display:none}
+#side .list h2{padding-bottom:8px;border-bottom:1px solid var(--line);margin-bottom:4px}
+#side .item{grid-template-columns:minmax(0,1fr) auto;border:0;border-radius:10px}
+#side .item.cur{background:var(--bg);box-shadow:inset 3px 0 0 var(--accent)}
+#side .ibody{display:block;min-height:56px;padding:9px 6px 9px 10px}
+#side .item .nm{font-size:14px;font-weight:600;line-height:1.3}
+#side .item .mt{display:flex;align-items:center;gap:6px;margin-top:2px;font-size:12px}
+#side .item .mt .dot{width:8px;height:8px}
+#side .item .mt>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#side .chk{display:grid;place-items:center;width:40px;height:40px;margin-right:2px;border:1.5px solid var(--muted);color:transparent}
+#side .chk svg{width:18px;height:18px;stroke-width:2.6}
+#side .chk:hover{border-color:var(--ok);color:var(--ok)}
+#side .chk[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:#fff}
+#side .more{width:100%;min-height:44px;margin-top:8px;border:0;border-radius:10px;background:var(--bg);font-weight:600}
+#side .empty{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:18px 6px;font-size:14px}
+#side .empty b{display:block;color:var(--ink);font-size:15px}
+#side .empty .btn{min-height:44px;margin-top:2px}
+#side #routeSec .rl li{border-color:transparent}
+@media (max-width:820px){
+  #side{--sp:16px;padding-block:0 calc(24px + env(safe-area-inset-bottom,0px))}
+  #side>*+*{margin-top:24px}
+  #side .grip+header{margin-top:0}
+  #side .brand,#side h1{display:none}
+  #side .tot{margin-top:0}
+  #side .tot-row b{font-size:34px}
+  #side .bar{margin-top:8px}
+  #side .seg3 button{min-height:44px}
+  #side .chk{width:44px;height:44px}
+  #side .zrow{min-height:48px}
+}
+@media (prefers-reduced-motion:reduce){#side *{transition:none!important}}
+
+/* Eventi in zona */
+#eventiSlot{padding-top:4px}
+#eventiSlot h2{margin-bottom:2px}
+.evday{margin:0 0 10px;font-size:13px;color:var(--muted)}
+.evl{list-style:none;margin:0;padding:0}
+.evl li{display:grid;gap:2px;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.evl li:first-child{border-top:0}
+.evl b{font-weight:600}
+.evl span{font-size:12px;color:var(--muted)}
+.evm{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.evn{display:block;margin:10px 0 0;font-size:12px;line-height:1.45;color:var(--muted)}
+.evd{margin-top:6px}
+.evd summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:12px;color:var(--muted)}
+.evb{display:inline-flex;align-items:center;gap:8px;margin-top:12px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);font-weight:600;font-size:13px}
+.evb:hover{background:var(--bg)}
+.plev{margin:8px 0 0;padding:8px 10px;border-radius:8px;font-size:12px;line-height:1.4;background:var(--bg);border-left:3px solid var(--line)}
+.plev span{display:block;color:var(--muted);margin-top:2px}
+.plev.alto{border-left-color:var(--accent-text);background:color-mix(in srgb,var(--accent) 8%,var(--panel))}
+.plev.medio{border-left-color:var(--warn)}
+.evcard{margin:12px 0 0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.evcard h4{margin:0 0 4px;font:600 11px/1.2 var(--f-body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.evp .evl li{grid-template-columns:1fr auto}
+.evp .evl li b,.evp .evl li span{grid-column:1}
+.evp .evl li .link{grid-column:2;grid-row:1/3;min-height:44px;padding:0 6px}
+.evp .ct{grid-template-columns:1fr 1fr 1fr}
+.evp input,.evp select,.evp button{min-height:44px}
+.evp .x{width:44px;height:44px}
+@media (max-width:820px){.evp .ct{grid-template-columns:1fr 1fr}}
+.evp .plr{display:flex;gap:10px;align-items:center;width:100%;min-height:44px;padding:8px 10px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left}
+.evp .plr small{display:block;font-size:12px;color:var(--muted)}
 </style>
 
 <div id="app">
   <aside id="side">
     <button class="grip" id="grip" aria-expanded="false" aria-controls="side"><i></i><span id="gripL">Filtri e luoghi</span></button>
     <header>
-      <div class="brand"><svg viewBox="0 0 1122.53 305.71" role="img" aria-label="Keymove" fill="currentColor"><path d="M748.33,61.23c-100.51,0-97.97,164.88.32,164.88s100.2-164.88-.32-164.88ZM763.55,215.02c-44.7,9.51-73.24-133.49-30.12-142.69,43.76-9.51,75.78,132.86,30.12,142.69Z"/><path d="M930.77,64.41c0,37.09,16.49,47.24.95,97.65l-13.63,44.4-40.59-142.05h-42.8l45.34,158.53h42.81l49.14-158.53h-41.22Z"/><path d="M1092.72,182.68c-1.9,15.21-8.88,32.97-26.63,32.97-15.22,0-30.76-13.63-33.61-36.46-5.4-44.08,78-33.93,82.12-75.15,2.85-28.22-32.03-42.81-58.66-42.81-100.51,0-97.98,164.88.32,164.88,32.97,0,55.17-18.7,66.27-43.43h-29.81ZM1041.04,72.33c2.85-.63,5.39-.95,8.24-.95,14.27,0,26.64,9.19,24.1,32.66-3.49,34.56-40.59,29.8-47.56,58.02-10.47-38.36-8.57-84.66,15.22-89.73Z"/><path d="M602.54,64.41c-21.88,0-37.74,13.63-45.98,33.29-7.61-22.52-26-33.29-45.66-33.29-13.41,0-24.17,4.75-32.43,12.55-5.09,4.8-8.74,10.93-10.83,17.6l-39.59,126.46-.35,1.11-.25.81h224.87v-99.24c0-40.27-23.47-59.29-49.78-59.29ZM524.15,222.94h-50.73v-113.82c0-14.01,6.35-25.37,20.36-25.37h5c14.01,0,25.37,11.36,25.37,25.37v113.82ZM611.09,222.94h-50.73v-113.82c0-14.01,11.36-25.37,25.37-25.37h0c14.01,0,25.37,11.36,25.37,25.37v113.82Z"/><path d="M91.32,151.25c-12.36,0-24.41,2.53-32.02,2.53-5.39,0-8.56-1.26-8.56-5.7.63-18.08,86.24.63,86.24-52.32,0-19.66-16.81-33.29-37.1-33.29s-43.12,12.68-58.66,45.34V0H0v221.96h41.22v-68.81c7.61,24.1,54.54-5.07,54.54,49.15v19.66h41.22v-10.15c0-51.37-23.15-60.56-45.66-60.56ZM41.22,145.86v-13c0-26,26.32-44.39,42.49-44.39,6.34,0,11.1,3.17,11.73,9.51,2.86,26-47.56,21.56-54.22,47.88Z"/><path d="M262.95,181.69c-1.9,15.22-8.88,32.97-26.64,32.97-15.22,0-30.75-13.63-33.61-36.46-5.39-44.07,78-33.93,82.13-75.15,2.85-28.22-32.03-42.8-58.66-42.8-100.52,0-97.98,164.88.31,164.88,32.98,0,55.18-18.71,66.27-43.44h-29.8ZM211.26,71.34c2.86-.63,5.39-.95,8.25-.95,14.27,0,26.63,9.2,24.1,32.66-3.49,34.56-40.59,29.81-47.57,58.03-10.46-38.37-8.56-84.66,15.22-89.74Z"/><path d="M394.5,64.42c0,37.1,16.49,47.24.96,97.66l-13.64,44.39-40.58-142.05h-42.81l45.34,158.54h32.98l-3.49,9.83c-10.46,29.48-45.34,36.78-71.02,42.8l28.21,30.12c26.96-16.8,44.71-45.97,56.13-82.75l49.14-158.54h-41.22Z"/></svg><span>Campagna candidato sindaco</span></div>
+      <div class="brand"><svg viewBox="0 0 1122.53 305.71" role="img" aria-label="Keymove" fill="currentColor"><path d="M748.33,61.23c-100.51,0-97.97,164.88.32,164.88s100.2-164.88-.32-164.88ZM763.55,215.02c-44.7,9.51-73.24-133.49-30.12-142.69,43.76-9.51,75.78,132.86,30.12,142.69Z"/><path d="M930.77,64.41c0,37.09,16.49,47.24.95,97.65l-13.63,44.4-40.59-142.05h-42.8l45.34,158.53h42.81l49.14-158.53h-41.22Z"/><path d="M1092.72,182.68c-1.9,15.21-8.88,32.97-26.63,32.97-15.22,0-30.76-13.63-33.61-36.46-5.4-44.08,78-33.93,82.12-75.15,2.85-28.22-32.03-42.81-58.66-42.81-100.51,0-97.98,164.88.32,164.88,32.97,0,55.17-18.7,66.27-43.43h-29.81ZM1041.04,72.33c2.85-.63,5.39-.95,8.24-.95,14.27,0,26.64,9.19,24.1,32.66-3.49,34.56-40.59,29.8-47.56,58.02-10.47-38.36-8.57-84.66,15.22-89.73Z"/><path d="M602.54,64.41c-21.88,0-37.74,13.63-45.98,33.29-7.61-22.52-26-33.29-45.66-33.29-13.41,0-24.17,4.75-32.43,12.55-5.09,4.8-8.74,10.93-10.83,17.6l-39.59,126.46-.35,1.11-.25.81h224.87v-99.24c0-40.27-23.47-59.29-49.78-59.29ZM524.15,222.94h-50.73v-113.82c0-14.01,6.35-25.37,20.36-25.37h5c14.01,0,25.37,11.36,25.37,25.37v113.82ZM611.09,222.94h-50.73v-113.82c0-14.01,11.36-25.37,25.37-25.37h0c14.01,0,25.37,11.36,25.37,25.37v113.82Z"/><path d="M91.32,151.25c-12.36,0-24.41,2.53-32.02,2.53-5.39,0-8.56-1.26-8.56-5.7.63-18.08,86.24.63,86.24-52.32,0-19.66-16.81-33.29-37.1-33.29s-43.12,12.68-58.66,45.34V0H0v221.96h41.22v-68.81c7.61,24.1,54.54-5.07,54.54,49.15v19.66h41.22v-10.15c0-51.37-23.15-60.56-45.66-60.56ZM41.22,145.86v-13c0-26,26.32-44.39,42.49-44.39,6.34,0,11.1,3.17,11.73,9.51,2.86,26-47.56,21.56-54.22,47.88Z"/><path d="M262.95,181.69c-1.9,15.22-8.88,32.97-26.64,32.97-15.22,0-30.75-13.63-33.61-36.46-5.39-44.07,78-33.93,82.13-75.15,2.85-28.22-32.03-42.8-58.66-42.8-100.52,0-97.98,164.88.31,164.88,32.98,0,55.18-18.71,66.27-43.44h-29.8ZM211.26,71.34c2.86-.63,5.39-.95,8.25-.95,14.27,0,26.63,9.2,24.1,32.66-3.49,34.56-40.59,29.81-47.57,58.03-10.46-38.37-8.56-84.66,15.22-89.74Z"/><path d="M394.5,64.42c0,37.1,16.49,47.24.96,97.66l-13.64,44.39-40.58-142.05h-42.81l45.34,158.54h32.98l-3.49,9.83c-10.46,29.48-45.34,36.78-71.02,42.8l28.21,30.12c26.96-16.8,44.71-45.97,56.13-82.75l49.14-158.54h-41.22Z"/></svg></div>
       <h1>Mappa dei luoghi · Milano</h1>
-      <p class="sub">Gestionale visite del candidato sindaco, per Municipio.</p>
       <div class="tot">
         <div class="tot-row"><b id="totN">0</b><span id="totL"></span></div>
         <div class="bar"><i id="totBar"></i></div>
         <div class="quick" id="quick"></div>
-        <button class="sidepl" id="sidePl"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h7a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h7"/></svg>Pianifica un giro</button>
       </div>
+      <button class="sidepl" id="sidePl"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h7a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h7"/></svg>Pianifica un giro</button>
     </header>
     <section class="filters" aria-label="Filtri">
-      <input class="search" id="fQ" type="search" placeholder="Cerca un luogo…" aria-label="Cerca per nome">
-      <div class="chips" id="chips" role="group" aria-label="Tipo di luogo"></div>
-      <details class="mf" id="mf"><summary><span>Altri filtri</span><em id="mfN" hidden></em></summary><div class="seg3" id="fState" role="group" aria-label="Stato"><button data-s="all" aria-pressed="true">Tutti</button><button data-s="todo" aria-pressed="false">Da vedere</button><button data-s="done" aria-pressed="false">Visti</button></div>
-      <div class="seg3" id="fExtra" role="group" aria-label="Priorità e richiami"><button data-s="all" aria-pressed="true">Ogni priorità</button><button data-s="alta" aria-pressed="false">Alta priorità</button><button data-s="recall" aria-pressed="false">Da richiamare</button></div></details>
+      <div class="sbox"><label for="fQ">Cerca un luogo</label><div class="sfield"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input class="search" id="fQ" type="search" placeholder="Nome o via" autocomplete="off"></div></div>
+      <div class="seg3" id="fState" role="group" aria-label="Stato"><button data-s="all" aria-pressed="true">Tutti</button><button data-s="todo" aria-pressed="false">Da vedere</button><button data-s="done" aria-pressed="false">Visti</button></div>
+      <div class="catbox">
+        <button class="catbtn" id="catBtn" aria-expanded="false" aria-controls="chips"><span class="k">Tipo di luogo</span><span class="v" id="catV">Tutti</span><svg class="ic chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="chips" id="chips" role="group" aria-label="Tipo di luogo" hidden></div>
+      </div>
+      <details class="mf" id="mf"><summary><span>Priorità e richiami</span><em id="mfN" hidden></em></summary>
+      <div class="seg3" id="fExtra" role="group" aria-label="Priorità e richiami"><button data-s="all" aria-pressed="true">Tutte</button><button data-s="alta" aria-pressed="false">Alta priorità</button><button data-s="recall" aria-pressed="false">Da richiamare</button></div></details>
     </section>
-    <section>
-      <h2>Municipi · tocca per ingrandire</h2>
+    <section class="zsec">
+      <h2>Municipio</h2>
       <div class="zones" id="zones"></div>
+      <p class="zcap" id="zcap" aria-live="polite"></p>
+    </section>
+    <section id="eventiSlot" aria-label="Eventi in zona">
     </section>
     <section id="routeSec" hidden><h2 id="routeH">Giro di visite</h2><div id="route"></div></section>
     <section class="list">
@@ -552,7 +684,10 @@ function drawMap(){
 function drawZones(){
   const base=scope({zone:true,state:true});
   const by={};base.forEach(p=>{const b=by[p.mun]||(by[p.mun]={n:0,d:0});b.n++;if(isDone(p))b.d++});
-  $('#zones').innerHTML=ZONES.map(z=>{const b=by[z.n]||{n:0,d:0};const pc=b.n?Math.round(100*b.d/b.n):0;return `<button class="zrow" data-n="${z.n}" aria-pressed="${F.zone===z.n}" aria-label="Municipio ${z.n}: ${b.d} visti su ${b.n}"><b>Mun. ${z.n}</b><span class="bar"><i style="width:${pc}%"></i></span><em>${b.d} / ${b.n}</em></button>`}).join('');
+  const bt=base.length,bd=base.filter(isDone).length;
+  $('#zones').innerHTML=`<button class="zrow tutti" data-n="0" aria-pressed="${!F.zone}" aria-label="Tutta Milano: ${bd} visti su ${bt}"><b>Tutti</b><span class="bar"><i style="width:${bt?Math.round(100*bd/bt):0}%"></i></span></button>`+ZONES.map(z=>{const b=by[z.n]||{n:0,d:0};const pc=b.n?Math.round(100*b.d/b.n):0;return `<button class="zrow" data-n="${z.n}" aria-pressed="${F.zone===z.n}" aria-label="Municipio ${z.n}: ${b.d} visti su ${b.n}" title="${b.d} / ${b.n}"><b>${z.n}</b><span class="bar"><i style="width:${pc}%"></i></span></button>`}).join('');
+  const zb=F.zone?(by[F.zone]||{n:0,d:0}):null;
+  $('#zcap').textContent=zb?`Municipio ${F.zone}: ${zb.d} visti su ${zb.n}`:'Tocca un numero per vedere solo quel Municipio.';
   const tn=base.length,td=base.filter(isDone).length;
   $('#totN').textContent=td;
   $('#totL').textContent='visti su '+tn+(F.cat!=='all'?' · '+CAT[F.cat].label:'');
@@ -560,19 +695,20 @@ function drawZones(){
   const all=ALL.filter(p=>!isHidden(p)),td0=today();
   const nRec=all.filter(p=>sOf(p).recall&&sOf(p).recall<=td0).length,nAlta=all.filter(p=>sOf(p).prio==='alta'&&!isDone(p)).length;
   $('#quick').innerHTML=(nRec?`<button data-x="recall"><b>${nRec}</b> da richiamare</button>`:'')+(nAlta?`<button data-x="alta"><b>${nAlta}</b> alta priorità da vedere</button>`:'');
-  const na=(F.state!=='all')+(F.extra!=='all');const mn=$('#mfN');mn.hidden=!na;mn.textContent=na;
+  const na=(F.extra!=='all')+0;const mn=$('#mfN');mn.hidden=!na;mn.textContent=na;
 }
 function drawList(){
   const l=scope({}).sort(F.extra==='recall'?(a,b)=>(sOf(a).recall||'').localeCompare(sOf(b).recall||'')||a.name.localeCompare(b.name,'it'):(a,b)=>a.name.localeCompare(b.name,'it'));
   $('#listH').textContent=l.length+(l.length===1?' luogo':' luoghi');
-  if(!l.length){$('#list').innerHTML='<div class="empty">Nessun luogo con questi filtri.</div>';return}
+  if(!l.length){$('#list').innerHTML='<div class="empty"><div><b>Nessun luogo trovato</b>Prova a cambiare la ricerca o a togliere un filtro.</div><button class="btn" id="fReset">Azzera i filtri</button></div>';return}
   const part=l.slice(0,shown);
-  $('#list').innerHTML=part.map(p=>{const d=isDone(p);return `<div class="item${p.id===selId?' cur':''}"><button class="ibody" data-id="${esc(p.id)}"><span class="dot" style="background:${CAT[p.cat].color}"></span><span><span class="nm">${esc(p.name)}</span><span class="mt">${CAT[p.cat].label} · Municipio ${p.mun}${extra(p)}</span></span></button>${canEdit()?`<button class="chk" data-id="${esc(p.id)}" aria-pressed="${d}" aria-label="${d?'Visto, tocca per annullare':'Segna come visto'}" title="${d?'Visto, tocca per annullare':'Segna come visto'}">✓</button>`:(d?'<span class="tick">Visto</span>':'')}</div>`}).join('')+(l.length>shown?`<button class="more" id="more">Mostra altri ${Math.min(200,l.length-shown)}</button>`:'');
+  $('#list').innerHTML=part.map(p=>{const d=isDone(p);return `<div class="item${p.id===selId?' cur':''}"><button class="ibody" data-id="${esc(p.id)}"><span class="nm">${esc(p.name)}</span><span class="mt"><i class="dot" style="background:${CAT[p.cat].color}"></i><span>${CAT[p.cat].label} · Mun. ${p.mun}${extra(p)}</span></span></button>${canEdit()?`<button class="chk" data-id="${esc(p.id)}" aria-pressed="${d}" aria-label="${d?'Visto, tocca per annullare':'Segna come visto'}" title="${d?'Visto, tocca per annullare':'Segna come visto'}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button>`:(d?'<span class="tick">Visto</span>':'')}</div>`}).join('')+(l.length>shown?`<button class="more" id="more">Mostra altri ${Math.min(200,l.length-shown)}</button>`:'');
 }
 function drawFilters(){
   const cnt={};ALL.filter(p=>!isHidden(p)).forEach(p=>cnt[p.cat]=(cnt[p.cat]||0)+1);
   const total=Object.values(cnt).reduce((a,b)=>a+b,0);
-  $('#chips').innerHTML=`<button class="chp all" data-c="all" aria-pressed="${F.cat==='all'}">Tutti <em>${total}</em></button>`+CATS.map(c=>`<button class="chp" data-c="${c[0]}" style="--c:${c[2]}" aria-pressed="${F.cat===c[0]}"><i class="dot" style="background:${c[2]}"></i>${c[1]} <em>${cnt[c[0]]||0}</em></button>`).join('');
+  $('#chips').innerHTML=`<button class="chp all" data-c="all" aria-pressed="${F.cat==='all'}"><span class="nm">Mostra tutti i tipi</span><em>${total}</em></button>`+CATS.map(c=>`<button class="chp" data-c="${c[0]}" style="--c:${c[2]}" aria-pressed="${F.cat===c[0]}"><i class="dot" style="background:${c[2]}"></i><span class="nm">${c[1]}</span><em>${cnt[c[0]]||0}</em></button>`).join('');
+  const v=$('#catV');v.textContent=F.cat==='all'?'Tutti':CAT[F.cat].label;v.classList.toggle('on',F.cat!=='all');
 }
 function refresh(){drawFilters();drawZones();drawList();drawMap();drawRoute();drawDash();if(selId||draft)syncCard()}
 
@@ -600,6 +736,7 @@ function placeHTML(p){
   <span class="chip"><i class="dot" style="background:${CAT[p.cat].color}"></i>${CAT[p.cat].label} · Municipio ${p.mun}</span>
   <h3>${esc(p.name)}</h3>
   <p class="meta">${esc(p.street)||'Indirizzo non indicato'}</p>
+  ${(()=>{try{return evCardHTML(p)}catch(_){return ''}})()}
   <div class="seg" role="group" aria-label="Stato"><button id="bTodo" aria-pressed="${!s.v}" ${dis}>Da vedere</button><button id="bDone" class="ok" aria-pressed="${!!s.v}" ${dis}>Visto</button></div>
   <label class="fld" id="dateF" ${s.v?'':'hidden'}>Data della visita<input id="cDate" type="date" value="${esc(s.at||'')}" ${dis}></label>
   <div class="fld">Priorità<div class="seg4" id="prio" role="group" aria-label="Priorità">${PRIO.map(x=>`<button data-p="${x[0]}" aria-pressed="${(s.prio||'')===x[0]}" ${dis}>${x[1]}</button>`).join('')}</div></div>
@@ -949,11 +1086,19 @@ async function resolveNames(){
   histRefresh();drawDash();
 }
 /* ---------- eventi dell'elenco e dei filtri ---------- */
-$('#chips').onclick=e=>{const b=e.target.closest('.chp');if(!b)return;F.cat=b.dataset.c;shown=200;refresh()};
+function catOpen(o){$('#chips').hidden=!o;$('#catBtn').setAttribute('aria-expanded',String(o))}
+$('#catBtn').onclick=()=>catOpen($('#chips').hidden);
+$('#chips').onclick=e=>{const b=e.target.closest('.chp');if(!b)return;F.cat=b.dataset.c;shown=200;catOpen(false);refresh()};
+function resetFilters(){
+  F.cat='all';F.state='all';F.extra='all';F.q='';$('#fQ').value='';
+  [['#fState','all'],['#fExtra','all']].forEach(a=>[...$(a[0]).children].forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.s===a[1]))));
+  shown=200;catOpen(false);setZone(0);
+}
 $('#fState').onclick=e=>{const b=e.target.closest('button');if(!b)return;F.state=b.dataset.s;[...$('#fState').children].forEach(x=>x.setAttribute('aria-pressed',String(x===b)));shown=200;refresh()};
 $('#fQ').oninput=e=>{F.q=e.target.value;shown=200;drawZones();drawList();drawMap()};
 $('#zones').onclick=e=>{const b=e.target.closest('.zrow');if(!b)return;const n=+b.dataset.n;setZone(F.zone===n?0:n)};
 $('#list').onclick=e=>{
+  if(e.target.id==='fReset'){resetFilters();return}
   if(e.target.id==='more'){shown+=200;drawList();return}
   const c=e.target.closest('.chk');
   if(c){const id=c.dataset.id;if(isDone({id}))patch(id,{v:false});else patch(id,{v:true,at:(st.get(id)||{}).at||today()});refresh();return}
@@ -1249,6 +1394,7 @@ function plGeo(){
 }
 /* ---- disegno del pannello ---- */
 function plRender(){
+  try{evSidebar()}catch(_){}
   if(!PL.open)return;
   const n=route.length,ns=routesMap.size;
   $('#plTabs').innerHTML=[['form','Imposta'],['res','Giro'+(n?' ('+n+')':'')],['saved','Salvati'+(ns?' ('+ns+')':'')]].map(k=>`<button data-act="tab" data-t="${k[0]}" aria-pressed="${PL.tab===k[0]}">${k[1]}</button>`).join('');
@@ -1332,6 +1478,7 @@ function plResView(){
   const l=routePlaces();
   if(!l.length)return `<div class="plempty"><b>Nessun giro per ora</b><p>Scegli la partenza e il tempo disponibile in «Imposta», poi premi «Trova il giro». Oppure apri un giro già salvato.</p><div class="row" style="justify-content:center"><button class="btn pri" data-act="tab" data-t="form">Imposta il giro</button><button class="btn" data-act="tab" data-t="saved">Giri salvati</button></div></div>`;
   const snap=PL.snap,eng=snap?plBuild(snap):null,tl=eng?eng.timeline(l.map(p=>p.id)):null;
+  let evg=null;try{evg=evGiro(l,tl,snap)}catch(_){}
   let h=`<div class="row" style="margin-top:8px"><button class="btn plmapb" data-act="seemap">${IC('map')}Vedi sulla mappa</button></div>`;
   if(PL.msg)h+=`<div class="plbn" role="status">${IC('clock')}<p>${esc(PL.msg)}</p></div>`;
   if(tl){
@@ -1340,6 +1487,7 @@ function plResView(){
       const pr=tl.problems.map(p=>{const pl=p.id&&placeById(p.id);return p.flag==='time'?`il giro supera il tempo disponibile di ${dMin(p.over)}`:p.flag==='closed'?`${pl?pl.name:'un luogo'} è chiuso quel giorno`:`${pl?pl.name:'un luogo'} chiude prima della fine della visita`});
       h+=`<div class="plbn warn" role="alert">${IC('alert')}<p><b>Il giro non è più valido:</b> ${esc(pr.join('; '))}. Togli una tappa o premi «Ricalcola».</p></div>`;
     }
+    try{h+=evBanner(evg)}catch(_){}
     const nh=tl.legs.filter(x=>x.flag==='nohours').length;
     if(nh)h+=`<div class="plbn">${IC('clock')}<p><b>Verifica gli orari.</b> Per ${nh===tl.legs.length?'tutte le tappe':nh+(nh===1?' tappa':' tappe')} non sono indicati gli orari di apertura: controllali prima di partire. Puoi inserirli nella scheda del luogo.</p></div>`;
   }else h+=`<div class="plbn">${IC('clock')}<p>Questo giro è stato composto a mano, quindi senza orari. Per vederli imposta partenza e tempo disponibile e premi «Trova il giro»: le tappe bloccate restano.</p></div>`;
@@ -1349,6 +1497,7 @@ function plResView(){
     const g=tl&&tl.legs[i],lk=PL.locked.indexOf(p.id)>=0,al=PL.alt&&PL.alt.id===p.id?PL.alt:null;
     h+=`<li class="plit${lk?' lk':''}"><div class="plmain"><b aria-hidden="true">${i+1}</b><button class="plnm" data-act="goto" data-id="${esc(p.id)}">${esc(p.name)}<small>${CAT[p.cat].label} · Municipio ${p.mun}</small></button></div>`;
     if(g)h+=`<p class="plt"><b>Arrivo ${plFmt(g.arrive)}</b>${g.wait>0?` · apre alle ${plFmt(g.start)} (attesa ${dMin(g.wait)})`:''} · visita ${dMin(g.end-g.start)} · ${g.travel?dMin(g.travel)+' dal punto precedente':'stesso punto del precedente'}${g.flag==='nohours'?'<span class="pltag">verifica gli orari</span>':g.flag==='closed'||g.flag==='late'?'<span class="pltag bad">'+(g.flag==='closed'?'chiuso':'chiude presto')+'</span>':''}</p>`;
+    try{h+=evTag(evg,i)}catch(_){}
     h+=`<div class="plact"><button data-act="lock" data-id="${esc(p.id)}" aria-pressed="${lk}" aria-label="${lk?'Sblocca':'Blocca'} la tappa ${esc(p.name)}" title="${lk?'Bloccata: resta nel ricalcolo. Tocca per sbloccare':'Blocca: resta nel ricalcolo'}">${IC(lk?'lock':'unlock')}</button>
       <button data-act="up" data-id="${esc(p.id)}" aria-label="Sposta su ${esc(p.name)}" title="Sposta su" ${i===0?'disabled':''}>${IC('up')}</button>
       <button data-act="down" data-id="${esc(p.id)}" aria-label="Sposta giù ${esc(p.name)}" title="Sposta giù" ${i===l.length-1?'disabled':''}>${IC('down')}</button>
@@ -1417,7 +1566,8 @@ function plText(){
   l.forEach((p,i)=>{const g=tl&&tl.legs[i];o.push((i+1)+'. '+(g?plFmt(g.arrive)+' ':'')+p.name+' ('+CAT[p.cat].label+', Municipio '+p.mun+')'+(g?' · visita '+dMin(g.end-g.start):'')+(p.street?'\n   '+p.street:''))});
   if(tl){if(s.ret)o.push('Rientro alle '+plFmt(tl.end)+' a '+s.start.label);else o.push('Fine alle '+plFmt(tl.end));
     o.push('Totale: visite '+dMin(tl.visit)+', spostamenti '+dMin(tl.travel)+', circa '+kmT(tl.km));
-    if(tl.legs.some(x=>x.flag==='nohours'))o.push('Verifica gli orari di apertura prima di partire.')}
+    if(tl.legs.some(x=>x.flag==='nohours'))o.push('Verifica gli orari di apertura prima di partire.')
+    try{evTextLines(evGiro(l,tl,s)).forEach(x=>o.push(x))}catch(_){}}
   mapsLinks(planPoints(l)).forEach((u,i,a)=>o.push((a.length>1?'Mappa parte '+(i+1)+': ':'Mappa: ')+u));
   return o.join('\n');
 }
@@ -1514,6 +1664,380 @@ if(!window.WebGLRenderingContext)document.querySelector('.vsw').hidden=true;
 applyVB();fit(ALLBOX);refresh();
 requestAnimationFrame(()=>{fit(F.zone?ZONES.find(z=>z.n===F.zone).box:ALLBOX);drawMap()});
 
+/* Punteggio di concomitanza fra eventi pubblici e tappe pianificate.
+ * Contratto: eventi/SCHEMA.md. Script classico, funzioni pure, nessun DOM, deterministico.
+ * Tutte le ore sono "ora locale Europe/Rome" in stringhe 'YYYY-MM-DDTHH:MM' (nessun fuso).
+ * Il risultato è una STIMA euristica, mai una certezza. Spiegazione del modello: v3/eventi-score.md */
+(function () {
+  'use strict';
+
+  // ---- Parametri del modello (tutto in un posto) ----
+  // peso = punteggio massimo (0-100) di una categoria con distanza, tempo e dimensione al massimo
+  var PESO = { politica: 90, corteo: 90, concerto: 90, sport: 90, convegno: 75, fiera: 65, mercato: 45, cultura: 35, altro: 25 };
+  // dimensione prudente quando la capienza è ignota
+  var DIM_IGNOTA = { politica: 0.8, corteo: 0.9, concerto: 0.6, sport: 0.6, convegno: 0.6, fiera: 0.7, mercato: 0.7, cultura: 0.5, altro: 0.5 };
+  // durata (min) se la fine non è nota
+  var DURATA = { politica: 120, corteo: 150, concerto: 180, sport: 150, convegno: 150, fiera: 480, mercato: 360, cultura: 120, altro: 120 };
+  // raggio oltre il quale l'effetto è nullo (m), eventi non grandi
+  var RMAX = { mercato: 1000, cultura: 1200 };
+  var RMAX_STD = 2000, FULL_STD = 300;       // distanza di effetto pieno: 300 m
+  var RMAX_GRANDE = 5000, FULL_GRANDE = 800; // eventi grandi (capienza >= 5000 o stadio)
+  var ATT = { politica: 12, corteo: 10 };    // "attenzione cittadina" massima (punti) anche da lontano
+  var SOGLIA = { alto: 60, medio: 30, basso: 10 };
+  var MARGINE_MAX = 120;                     // oltre 120 min di distanza temporale l'effetto è nullo
+  var RE_STADIO = /stadio|san\s*siro|meazza|arena|ippodromo|fiera\s*milano|rho\s*fiera|unipol|forum|mediolanum|palasharp|palazzetto|ice\s*rink/i;
+  var RE_GRANDE_LUOGO = /stadio|san\s*siro|meazza|ippodromo|fiera\s*milano|rho\s*fiera/i;
+  var ETICHETTA = { politica: 'Evento politico', corteo: 'Corteo', concerto: 'Concerto', sport: 'Evento sportivo', convegno: 'Convegno', fiera: 'Fiera', mercato: 'Mercato', cultura: 'Evento culturale', altro: 'Evento' };
+
+  // ---- Utilità di tempo (UTC puro usato solo come calendario, mai come fuso) ----
+  var RE_DT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::\d{2})?$/;
+  function parseDT(s) { // -> minuti da epoca "locale", o null se non valida
+    if (typeof s !== 'string') return null;
+    var m = RE_DT.exec(s); if (!m) return null;
+    var y = +m[1], mo = +m[2], d = +m[3], h = +m[4], mi = +m[5];
+    if (h > 23 || mi > 59) return null;
+    var t = Date.UTC(y, mo - 1, d, h, mi);
+    var c = new Date(t);
+    if (c.getUTCFullYear() !== y || c.getUTCMonth() !== mo - 1 || c.getUTCDate() !== d) return null; // es. 31 febbraio
+    return t / 60000;
+  }
+  function parseDay(s) { return (typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s)) ? parseDT(s + 'T00:00') : null; }
+  function dayStart(min) { return Math.floor(min / 1440) * 1440; }
+  function hm(min) { var d = new Date(min * 60000); return d.getUTCHours() + ':' + ('0' + d.getUTCMinutes()).slice(-2); }
+
+  // ---- Geografia ----
+  function okCoord(lat, lon) { return typeof lat === 'number' && typeof lon === 'number' && isFinite(lat) && isFinite(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180; }
+  function haversine(la1, lo1, la2, lo2) {
+    var R = 6371000, r = Math.PI / 180;
+    var dLa = (la2 - la1) * r, dLo = (lo2 - lo1) * r;
+    var a = Math.sin(dLa / 2) * Math.sin(dLa / 2) + Math.cos(la1 * r) * Math.cos(la2 * r) * Math.sin(dLo / 2) * Math.sin(dLo / 2);
+    return 2 * R * Math.asin(Math.min(1, Math.sqrt(a)));
+  }
+  function txtDist(d) {
+    if (d < 50) return 'nello stesso luogo';
+    if (d < 1000) return 'a ' + (Math.round(d / 10) * 10) + ' m';
+    return 'a ' + (Math.round(d / 100) / 10).toString().replace('.', ',') + ' km';
+  }
+
+  // ---- Evento ----
+  function catDi(ev) { return PESO[ev && ev.categoria] !== undefined ? ev.categoria : 'altro'; }
+  function capDi(ev) { var c = ev && ev.capienza; return (typeof c === 'number' && isFinite(c) && c > 0) ? c : null; }
+  function testoLuogo(ev) { var l = (ev && ev.luogo) || {}; return String(l.nome || '') + ' ' + String(l.indirizzo || '') + ' ' + String((ev && ev.titolo) || ''); }
+  function eGrande(ev) {
+    var c = capDi(ev), cat = catDi(ev);
+    if (c !== null) return c >= 5000;
+    return (cat === 'concerto' || cat === 'sport') && RE_GRANDE_LUOGO.test(testoLuogo(ev));
+  }
+  function fattoreDim(ev) {
+    var c = capDi(ev), cat = catDi(ev);
+    if (c !== null) return Math.max(0.5, Math.min(1, 0.5 + 0.5 * Math.log(c / 100) / Math.log(500))); // 100 -> 0,5; 50000 -> 1
+    if ((cat === 'concerto' || cat === 'sport') && RE_STADIO.test(testoLuogo(ev))) return RE_GRANDE_LUOGO.test(testoLuogo(ev)) ? 1 : 0.85;
+    return DIM_IGNOTA[cat];
+  }
+  // intervallo [s,e) in minuti; null se l'inizio non è valido
+  function intervallo(ev) {
+    if (!ev || typeof ev !== 'object') return null;
+    var s = parseDT(ev.inizio); if (s === null) return null;
+    var f = parseDT(ev.fine), fineNota = f !== null && f > s;
+    if (ev.tutto_il_giorno === true) {
+      var s0 = dayStart(s), e0 = fineNota ? dayStart(f) + 1440 : s0 + 1440;
+      return { s: s0, e: e0, tutto: true, fineNota: true };
+    }
+    if (fineNota) return { s: s, e: f, tutto: false, fineNota: true, durStimata: 0 };
+    var dur = DURATA[catDi(ev)];
+    return { s: s, e: s + dur, tutto: false, fineNota: false, durStimata: dur };
+  }
+
+  // ---- Nucleo del modello ----
+  function fattoreDist(d, grande, cat) {
+    var full = grande ? FULL_GRANDE : FULL_STD;
+    var max = grande ? RMAX_GRANDE : (RMAX[cat] || RMAX_STD);
+    if (d <= full) return 1;
+    if (d >= max) return 0;
+    return 1 - (d - full) / (max - full);
+  }
+  // punteggio = peso * fd * ft * fdim + att * (1 - fd) * fta   (poi limitato a 0-100 e arrotondato)
+  function calcola(ev, d, ft, fta) {
+    var cat = catDi(ev), grande = eGrande(ev), fd = fattoreDist(d, grande, cat), fdim = fattoreDim(ev);
+    var att = ATT[cat] || 0;
+    var raw = PESO[cat] * fd * ft * fdim + att * (1 - fd) * fta;
+    return { punteggio: Math.max(0, Math.min(100, Math.round(raw))), fd: fd, fdim: fdim, grande: grande, att: att, cat: cat };
+  }
+  function livelloDi(p) { return p >= SOGLIA.alto ? 'alto' : p >= SOGLIA.medio ? 'medio' : p >= SOGLIA.basso ? 'basso' : 'nessuno'; }
+
+  function esitoVuoto(motivo) {
+    return { punteggio: 0, livello: 'nessuno', motivi: [motivo], distanza_m: null, sovrapposizione_min: 0, margine_min: null };
+  }
+
+  function effetto(cat, grande, p) {
+    switch (cat) {
+      case 'mercato': return p + ' traffico e pochi parcheggi';
+      case 'politica': case 'convegno': return p + ' concorrenza di attenzione e di pubblico';
+      case 'corteo': return p + ' strade chiuse, traffico e attenzione mediatica';
+      case 'concerto': case 'sport': return grande ? p + ' grande afflusso, traffico e parcheggi molto difficili' : p + ' afflusso e traffico';
+      case 'fiera': return p + ' afflusso e traffico';
+      default: return 'impatto probabilmente modesto';
+    }
+  }
+
+  function valuta(evento, tappa, opz) {
+    void opz; // riservato per usi futuri
+    try {
+      var iv = intervallo(evento);
+      if (!iv) return esitoVuoto('Dati dell\'evento incompleti (data di inizio mancante o non valida): valutazione non possibile.');
+      if (!evento.luogo || !okCoord(evento.luogo.lat, evento.luogo.lon)) return esitoVuoto('Evento senza coordinate: non è possibile stimare la distanza dalla tappa.');
+      if (!tappa || typeof tappa !== 'object' || !okCoord(tappa.lat, tappa.lon)) return esitoVuoto('Tappa senza coordinate valide: valutazione non possibile.');
+      var ts = parseDT(tappa.inizio);
+      if (ts === null) return esitoVuoto('Tappa senza orario d\'arrivo valido: valutazione non possibile.');
+      var tf = parseDT(tappa.fine), te = (tf !== null && tf > ts) ? tf : ts + 60;
+
+      var d = haversine(evento.luogo.lat, evento.luogo.lon, tappa.lat, tappa.lon);
+      var sov = Math.max(0, Math.min(iv.e, te) - Math.max(iv.s, ts));
+      var gap = sov > 0 ? 0 : (iv.e <= ts ? ts - iv.e : iv.s - te);
+      var ft;
+      if (iv.tutto) ft = sov > 0 ? 0.5 : 0;
+      else if (sov > 0) ft = 0.7 + 0.3 * Math.min(1, sov / 30);
+      else ft = Math.max(0, 0.7 * (1 - gap / MARGINE_MAX));
+      var fta = gap <= 240 || sov > 0 ? Math.max(ft, 0.3) : 0; // attenzione cittadina: stessa giornata/fascia larga
+      if (iv.tutto && sov === 0) fta = 0;
+
+      var c = calcola(evento, d, ft, fta);
+      var liv = livelloDi(c.punteggio);
+      var out = { punteggio: c.punteggio, livello: liv, motivi: [], distanza_m: Math.round(d), sovrapposizione_min: Math.round(sov), margine_min: sov > 0 ? 0 : Math.round(gap) };
+      var m = out.motivi;
+
+      if (ft === 0 && fta === 0) {
+        var stessoGiorno = dayStart(iv.s) <= dayStart(ts) && dayStart(iv.e - 1) >= dayStart(ts);
+        m.push(stessoGiorno ? 'Evento nello stesso giorno ma in un orario troppo lontano dalla tappa: nessun effetto previsto.'
+          : 'Evento in un altro giorno: nessun effetto previsto.');
+        return out;
+      }
+      if (c.fd === 0 && c.att === 0) {
+        m.push('Evento ' + txtDist(d) + ' dalla tappa, troppo distante per avere effetto: nessun impatto previsto.');
+        return out;
+      }
+
+      var p = c.punteggio >= SOGLIA.alto ? 'probabile' : 'possibile';
+      var etich = ETICHETTA[c.cat] + (c.cat === 'mercato' && evento.ricorrente === 'settimanale' ? ' settimanale' : '');
+      var fascia = iv.tutto ? 'tutto il giorno' : (iv.fineNota ? hm(iv.s) + '–' + hm(iv.e) : 'dalle ' + hm(iv.s));
+      if (c.fd > 0 && ft > 0) {
+        m.push(etich + ' ' + txtDist(d) + ', ' + fascia + ': ' + effetto(c.cat, c.grande, p) + '.');
+        if (iv.tutto) m.push('Evento per tutta la giornata: effetto sugli orari della tappa incerto.');
+        else if (sov > 0) m.push('Si sovrappone alla tappa per ' + Math.round(sov) + ' min.');
+        else if (iv.e <= ts) m.push('Termina ' + Math.round(gap) + ' min prima della tappa: possibili code e deflusso.');
+        else m.push('Inizia ' + Math.round(gap) + ' min dopo la fine della tappa: possibili code all\'afflusso.');
+        if (!iv.fineNota) m.push('Orario di fine non noto: stimata una durata di circa ' + (Math.round(iv.durStimata / 6) / 10).toString().replace('.', ',') + ' ore.');
+        var cap = capDi(evento);
+        if (cap !== null && cap >= 1000) m.push('Capienza dichiarata: circa ' + cap + ' persone.');
+        else if (c.grande) m.push('Luogo di grandi eventi (capienza non indicata): afflusso potenzialmente elevato.');
+      }
+      if (c.att > 0 && c.fd < 0.5 && fta > 0) {
+        m.push((c.cat === 'corteo' ? 'Corteo' : 'Evento politico') + ' in città ' + (ft >= 0.5 ? 'nella stessa fascia oraria' : 'nella stessa giornata') + ': ' + (ft >= 0.5 ? 'possibile concorrenza di attenzione.' : 'possibile concorrenza di attenzione, ma debole.'));
+      }
+      if (liv === 'nessuno') m.push('Effetto stimato trascurabile.');
+      else if (evento.affidabilita === 'stima') m.push('Dato dell\'evento stimato, da verificare.');
+      if (!m.length) m.push('Effetto stimato trascurabile.');
+      return out;
+    } catch (e) {
+      return esitoVuoto('Valutazione non riuscita per dati inattesi.');
+    }
+  }
+
+  var ORDINE = { nessuno: 0, basso: 1, medio: 2, alto: 3 };
+  function perGiro(eventi, tappe, opz) {
+    var lista = Array.isArray(eventi) ? eventi : [], ts = Array.isArray(tappe) ? tappe : [];
+    var perTappa = [], nAlto = 0, nMedio = 0, nBasso = 0, max = 'nessuno';
+    ts.forEach(function (t, i) {
+      var voci = [];
+      lista.forEach(function (ev) {
+        var esito = valuta(ev, t, opz);
+        if (esito.livello !== 'nessuno') voci.push({ evento: ev, esito: esito });
+      });
+      voci.sort(function (a, b) { return b.esito.punteggio - a.esito.punteggio || (String(a.evento && a.evento.id) < String(b.evento && b.evento.id) ? -1 : 1); });
+      voci.forEach(function (v) {
+        if (v.esito.livello === 'alto') nAlto++; else if (v.esito.livello === 'medio') nMedio++; else nBasso++;
+        if (ORDINE[v.esito.livello] > ORDINE[max]) max = v.esito.livello;
+      });
+      perTappa.push({ tappaIdx: i, voci: voci });
+    });
+    var testo;
+    if (max === 'nessuno') testo = 'Nessun evento in concomitanza che possa pesare sul giro.';
+    else {
+      var parti = [];
+      if (nAlto) parti.push(nAlto + (nAlto === 1 ? ' evento' : ' eventi') + ' con possibile impatto alto');
+      if (nMedio) parti.push(nMedio + (nMedio === 1 ? ' evento' : ' eventi') + ' con impatto medio');
+      if (!parti.length) parti.push(nBasso + (nBasso === 1 ? ' evento' : ' eventi') + ' con impatto basso');
+      testo = 'Nel giro: ' + parti.join(' e ') + ' (stima, da verificare).';
+    }
+    return { perTappa: perTappa, riepilogo: { livello: max, n_alto: nAlto, n_medio: nMedio, testo: testo } };
+  }
+
+  // Eventi del giorno vicini a un punto, ordinati per rilevanza (tempo ignorato: conta distanza, categoria, dimensione).
+  // Restituisce copie degli eventi con in più: distanza_m, rilevanza (0-100), livello.
+  function nelDintorni(eventi, q) {
+    var lista = Array.isArray(eventi) ? eventi : [];
+    if (!q || !okCoord(q.lat, q.lon)) return [];
+    var g = parseDay(q.giorno); if (g === null) return [];
+    var raggio = (typeof q.raggio_m === 'number' && isFinite(q.raggio_m) && q.raggio_m > 0) ? q.raggio_m : 1000;
+    var out = [];
+    lista.forEach(function (ev) {
+      var iv = intervallo(ev);
+      if (!iv || !ev.luogo || !okCoord(ev.luogo.lat, ev.luogo.lon)) return;
+      if (!(iv.s < g + 1440 && iv.e > g)) return;
+      var d = haversine(ev.luogo.lat, ev.luogo.lon, q.lat, q.lon);
+      if (d > raggio) return;
+      var c = calcola(ev, d, 1, 1);
+      var copia = {}; for (var k in ev) if (Object.prototype.hasOwnProperty.call(ev, k)) copia[k] = ev[k];
+      copia.distanza_m = Math.round(d); copia.rilevanza = c.punteggio; copia.livello = livelloDi(c.punteggio);
+      out.push(copia);
+    });
+    out.sort(function (a, b) { return b.rilevanza - a.rilevanza || a.distanza_m - b.distanza_m || (String(a.id) < String(b.id) ? -1 : String(a.id) > String(b.id) ? 1 : 0); });
+    return out;
+  }
+
+  var EVT = { valuta: valuta, perGiro: perGiro, nelDintorni: nelDintorni, _haversine: haversine, _parseDT: parseDT, PARAMETRI: { PESO: PESO, DURATA: DURATA, SOGLIA: SOGLIA } };
+  globalThis.EVT = EVT;
+  if (typeof module !== 'undefined') module.exports = EVT;
+})();
+
+/*EVENTI-UI-START*/
+/* Eventi in zona: dati automatici (eventi/eventi.json, aggiornato da uno script) + eventi segnalati dal team (collezione 'events').
+   Il punteggio viene da EVT (v3/eventi-score.js): è una STIMA, i testi lo dicono. */
+const EV_CAT={politica:'Evento politico',corteo:'Corteo o manifestazione',concerto:'Concerto',sport:'Evento sportivo',convegno:'Convegno',fiera:'Fiera',mercato:'Mercato',cultura:'Cultura',altro:'Altro'};
+const EV_TEAM_CATS=['politica','convegno','corteo','concerto','sport','fiera','cultura','altro'];
+const EV_PUNTI=[['Piazza Duomo',45.4641,9.1919],['Piazza Scala',45.4674,9.1895],['Piazza Cordusio',45.4655,9.1859],['Castello Sforzesco',45.4705,9.1793],['Arco della Pace',45.4724,9.1727],['Stazione Centrale',45.4863,9.2051],['Stazione Garibaldi',45.4843,9.1869],['Piazza Gae Aulenti',45.4839,9.1906],['Porta Venezia',45.4745,9.2045],['Cadorna',45.4679,9.1755],['Darsena',45.4519,9.1750],['Stadio San Siro',45.4781,9.1240]];
+let EV_AUTO=[],EV_META=null,EV_FORM={sel:null,q:'',arm:''};
+const evTeam=new Map();
+const evAll=()=>EV_AUTO.concat([...evTeam.values()]);
+const evDay=()=>(PL.snap&&PL.snap.day)||today();
+const evHM=m=>plFmt(m);
+const evOra=e=>e.tutto_il_giorno?'tutto il giorno':(e.inizio.slice(11,16)+(e.fine?'–'+e.fine.slice(11,16):''));
+const evDow=s=>{const d=new Date(s+'T12:00:00'),t=d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});return t.charAt(0).toUpperCase()+t.slice(1)};
+async function loadEventi(){
+  try{const r=await fetch('eventi/eventi.json',{cache:'no-cache'});if(!r.ok)throw new Error(r.status);const d=await r.json();EV_META=d;EV_AUTO=Array.isArray(d.eventi)?d.eventi:[]}
+  catch(_){EV_META=null;EV_AUTO=[]}
+  evRefresh();
+}
+/* ---- barra laterale ---- */
+let evSideKey='';
+function evSidebar(){
+  const box=$('#eventiSlot');if(!box||typeof EVT==='undefined')return;
+  const g=evDay(),all=evAll(),delGiorno=all.filter(e=>e.inizio&&e.inizio.slice(0,10)===g);
+  const rilev=delGiorno.filter(e=>e.categoria!=='mercato').sort((a,b)=>a.inizio.localeCompare(b.inizio));
+  const mk=delGiorno.length-rilev.length;
+  const key=g+'|'+(PL.snap?'g':'-')+'|'+rilev.map(e=>e.id).join(',')+'|'+mk+'|'+(EV_META?EV_META.generato:'-')+'|'+evTeam.size;
+  if(key===evSideKey)return;evSideKey=key;
+  let h=`<h2>Eventi in città</h2><p class="evday">${esc(evDow(g))}${PL.snap?' · giorno del giro':''}</p>`;
+  if(rilev.length)h+='<ul class="evl">'+rilev.slice(0,4).map(e=>`<li><b>${esc(e.titolo)}</b><span>${evOra(e)} · ${esc(EV_CAT[e.categoria]||'Altro')}${e.luogo&&e.luogo.nome?' · '+esc(e.luogo.nome):''}</span></li>`).join('')+'</ul>'+(rilev.length>4?`<p class="evm">+ altri ${rilev.length-4} eventi</p>`:'');
+  else h+=`<p class="evm">Nessun evento rilevante${mk?' · '+mk+(mk===1?' mercato':' mercati'):''}.</p>`;
+  if(rilev.length&&mk)h+=`<p class="evm">${mk} mercati in città quel giorno.</p>`;
+  h+=`<button class="evb" id="evOpen">${IC('plus')}Segnala un evento</button>`;
+  h+=EV_META?`<details class="evd"><summary>Come funziona</summary><p class="evn">Dati automatici: mercati, partite a San Siro e scioperi, aggiornati il ${fmtDate(String(EV_META.generato).slice(0,10))}. Comizi e convegni degli altri candidati non si trovano da soli: segnalali tu e il giro ti avvisa se si sovrappongono.</p></details>`:`<p class="evn">Gli eventi automatici non sono disponibili in questa pagina: restano quelli segnalati dal team.</p>`;
+  box.innerHTML=h;
+}
+/* ---- giro ---- */
+function evGiro(l,tl,snap){
+  if(typeof EVT==='undefined'||!tl||!snap)return null;
+  const tappe=l.map((p,i)=>{const g=tl.legs[i];return g?{lat:p.lat,lon:p.lon,inizio:snap.day+'T'+evHM(g.start),fine:snap.day+'T'+evHM(g.end),nome:p.name,cat:p.cat}:null}).filter(Boolean);
+  if(tappe.length!==l.length)return null;
+  try{return EVT.perGiro(evAll(),tappe)}catch(_){return null}
+}
+function evGruppi(ev){
+  const m=new Map();
+  ev.perTappa.forEach(t=>t.voci.forEach(x=>{const o=m.get(x.evento.id)||{e:x.evento,alto:[],medio:[],basso:[]};o[x.esito.livello].push(t.tappaIdx+1);m.set(x.evento.id,o)}));
+  return [...m.values()].filter(o=>o.alto.length||o.medio.length).sort((a,b)=>(b.alto.length-a.alto.length)||(b.medio.length-a.medio.length));
+}
+const evTappe=a=>a.length===1?'la tappa '+a[0]:'le tappe '+a.join(', ');
+function evBanner(ev){
+  if(!ev)return '';
+  const g=evGruppi(ev),n=evAll().filter(e=>e.inizio&&e.inizio.slice(0,10)===evDay()).length;
+  const alto=g.some(o=>o.alto.length);
+  const righe=g.slice(0,3).map(o=>`<b>${esc(o.e.titolo)}</b>: ${o.alto.length?'impatto probabile per '+evTappe(o.alto):''}${o.alto.length&&o.medio.length?'; ':''}${o.medio.length?'da valutare per '+evTappe(o.medio):''}.`).join(' ');
+  return `<div class="plbn${alto?' warn':''}" role="status">${IC(g.length?'alert':'pin')}<p><b>${g.length?'Eventi da tenere d\'occhio.':'Nessun conflitto con eventi noti.'}</b> ${righe}${g.length>3?' + altri '+(g.length-3)+' eventi.':''} <small class="evn">Controllati ${n} eventi del giorno. È una stima: comizi e convegni di altri candidati si vedono solo se segnalati.</small><button class="btn" style="margin-top:8px;min-height:44px" data-act="evopen">Segnala un evento</button></p></div>`;
+}
+function evTag(ev,i){
+  if(!ev)return '';
+  const t=ev.perTappa.find(x=>x.tappaIdx===i);if(!t||!t.voci.length)return '';
+  const v=t.voci.slice(0,2).map(x=>`<p class="plev ${x.esito.livello}"><b>${x.esito.livello==='alto'?'Attenzione':x.esito.livello==='medio'?'Da valutare':'Nota'}:</b> ${esc(x.evento.titolo)} <span>${esc((x.esito.motivi||[])[0]||'')}</span></p>`).join('');
+  return v+(t.voci.length>2?`<p class="plev basso">+ altri ${t.voci.length-2} eventi vicini</p>`:'');
+}
+function evTextLines(ev){
+  if(!ev)return [];
+  const g=evGruppi(ev);if(!g.length)return [];
+  return ['Attenzione, eventi in zona (stima):'].concat(g.slice(0,4).map(o=>'- '+o.e.titolo+': '+evTappe(o.alto.concat(o.medio).sort((x,y)=>x-y))+(o.e.categoria==='sport'?' (possibile traffico e parcheggi difficili)':'')));
+}
+/* ---- scheda luogo ---- */
+function evCardHTML(p){
+  if(typeof EVT==='undefined')return '';
+  let v=[];try{v=EVT.nelDintorni(evAll(),{lat:p.lat,lon:p.lon,giorno:evDay(),raggio_m:800})}catch(_){}
+  v=v.filter(e=>e.livello!=='nessuno'||e.categoria!=='mercato').slice(0,3);
+  if(!v.length)return '';
+  return `<div class="evcard"><h4>Eventi vicini · ${esc(fmtDate(evDay()))}</h4><ul class="evl">${v.map(e=>`<li><b>${esc(e.titolo)}</b><span>${evOra(e)} · a ${e.distanza_m<1000?Math.round(e.distanza_m/10)*10+' m':(e.distanza_m/1000).toFixed(1).replace('.',',')+' km'}</span></li>`).join('')}</ul></div>`;
+}
+/* ---- modulo "Segnala un evento" ---- */
+function evPanel(){let p=$('#evPanel');if(!p){p=document.createElement('section');p.id='evPanel';p.className='dash evp';p.setAttribute('aria-label','Segnala un evento');p.hidden=true;$('#mapwrap').appendChild(p);p.addEventListener('click',evClick);p.addEventListener('input',evInput)}return p}
+function evOpenForm(){EV_FORM={sel:null,q:'',arm:''};const p=evPanel();p.hidden=false;evFormDraw();const t=$('#evT');if(t)t.focus()}
+function evClose(){const p=$('#evPanel');if(p)p.hidden=true}
+function evResults(){
+  const q=norm(EV_FORM.q.trim());if(q.length<2)return '';
+  const a=EV_PUNTI.filter(x=>norm(x[0]).includes(q)).map(x=>({n:x[0],s:'Punto di riferimento',lat:x[1],lon:x[2]}));
+  const b=ALL.filter(x=>norm(x.name+' '+(x.street||'')).includes(q)).slice(0,6).map(x=>({n:x.name,s:(x.street||'Municipio '+x.mun),lat:x.lat,lon:x.lon}));
+  const r=a.concat(b).slice(0,7);
+  if(!r.length)return '<p class="hlp">Nessun risultato: prova il nome di un luogo noto o di una via.</p>';
+  return r.map((x,i)=>`<button class="plr" data-evsel="${i}" data-n="${esc(x.n)}" data-lat="${x.lat}" data-lon="${x.lon}">${IC('pin')}<span>${esc(x.n)}<small>${esc(x.s)}</small></span></button>`).join('');
+}
+function evFormDraw(){
+  const p=evPanel(),keep=['evT','evC','evD','evA','evB','evN','evL'].reduce((o,k)=>{const e=$('#'+k);o[k]=e?e.value:'';return o},{});
+  const sel=EV_FORM.sel;
+  p.innerHTML=`<div class="dh"><h2>Segnala un evento</h2><button class="x" data-ev="close" aria-label="Chiudi">×</button></div>
+  <p class="hlp">Comizi, convegni o altri eventi che non si trovano in automatico. Servono a evitare sovrapposizioni con i tuoi appuntamenti.</p>
+  <label class="fld">Titolo<input id="evT" type="text" maxlength="100" autocomplete="off" value="${esc(keep.evT)}"></label>
+  <label class="fld">Tipo<select id="evC">${EV_TEAM_CATS.map(c=>`<option value="${c}" ${keep.evC===c?'selected':''}>${EV_CAT[c]}</option>`).join('')}</select></label>
+  <div class="ct"><label class="fld">Giorno<input id="evD" type="date" value="${esc(keep.evD||evDay())}"></label><label class="fld">Dalle<input id="evA" type="time" value="${esc(keep.evA)}"></label><label class="fld">Alle (facoltativo)<input id="evB" type="time" value="${esc(keep.evB)}"></label></div>
+  <div class="fld">Dove${sel?`<div class="plchip"><span>${IC('pin')}${esc(sel.n)}</span><button data-ev="unsel" aria-label="Cambia luogo">×</button></div>`:`<input id="evQ" type="search" autocomplete="off" placeholder="Cerca un luogo, una piazza o una via" value="${esc(EV_FORM.q)}" aria-label="Dove si svolge"><div id="evRes">${evResults()}</div>`}</div>
+  <label class="fld">Partecipanti previsti (facoltativo)<input id="evN" type="number" min="0" max="200000" value="${esc(keep.evN)}"></label>
+  <label class="fld">Link o fonte (facoltativo)<input id="evL" type="url" maxlength="300" placeholder="https://…" value="${esc(keep.evL)}"></label>
+  <p class="er" id="evE" role="alert"></p>
+  <div class="row"><button class="btn pri" data-ev="save" ${canWrite&&db?'':'disabled'}>Salva evento</button></div>
+  ${canWrite&&db?'':'<p class="hlp">Il salvataggio non è disponibile: la pagina non è collegata all\'archivio.</p>'}
+  <h2>Inseriti dal team</h2>${evTeamList()}`;
+}
+function evTeamList(){
+  const l=[...evTeam.values()].sort((a,b)=>a.inizio.localeCompare(b.inizio));
+  if(!l.length)return '<p class="hlp">Ancora nessun evento segnalato.</p>';
+  return '<ul class="evl">'+l.map(e=>`<li><b>${esc(e.titolo)}</b><span>${esc(fmtDate(e.inizio.slice(0,10)))} · ${evOra(e)} · ${esc(e.luogo.nome)}</span><button class="link" data-ev="del" data-id="${esc(e.id)}">${EV_FORM.arm===e.id?'Conferma: elimina':'Elimina'}</button></li>`).join('')+'</ul>';
+}
+function evInput(e){if(e.target.id==='evQ'){EV_FORM.q=e.target.value;const r=$('#evRes');if(r)r.innerHTML=evResults()}}
+function evClick(e){
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.evsel!==undefined){EV_FORM.sel={n:b.dataset.n,lat:+b.dataset.lat,lon:+b.dataset.lon};evFormDraw();return}
+  const a=b.dataset.ev;if(!a)return;
+  if(a==='close')evClose();
+  else if(a==='unsel'){EV_FORM.sel=null;EV_FORM.q='';evFormDraw()}
+  else if(a==='del'){if(EV_FORM.arm!==b.dataset.id){EV_FORM.arm=b.dataset.id;evFormDraw();return}EV_FORM.arm='';if(db)db.doc('events/'+b.dataset.id).delete().catch(()=>toast('Eliminazione non riuscita.'))}
+  else if(a==='save')evSave();
+}
+function evSave(){
+  const er=$('#evE'),v=k=>($('#'+k)||{}).value||'';
+  const t=v('evT').trim(),d=v('evD'),a=v('evA'),b=v('evB');
+  let m='';
+  if(!t)m='Scrivi il titolo dell\'evento.';
+  else if(!d)m='Scegli il giorno.';
+  else if(!a)m='Indica l\'ora di inizio.';
+  else if(b&&b<=a)m='L\'ora di fine deve essere dopo quella di inizio.';
+  else if(!EV_FORM.sel)m='Scegli dove si svolge: cerca un luogo, una piazza o una via e toccalo.';
+  else if(v('evL')&&!/^https?:\/\//i.test(v('evL')))m='Il link deve iniziare con http:// o https://.';
+  if(m){er.textContent=m;return}
+  er.textContent='';
+  const id='team-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),n=parseInt(v('evN'),10);
+  const e={id,titolo:t.slice(0,100),categoria:v('evC'),inizio:d+'T'+a,fine:b?d+'T'+b:null,tutto_il_giorno:false,luogo:{nome:EV_FORM.sel.n,indirizzo:'',lat:EV_FORM.sel.lat,lon:EV_FORM.sel.lon},capienza:n>0?n:null,gratuito:null,ricorrente:null,fonte:{id:'team',nome:'Segnalato dal team',url:v('evL')||''},affidabilita:'segnalato',at:new Date().toISOString(),by:uid||''};
+  db.doc('events/'+id).set(e).then(()=>{toast('Evento salvato.');EV_FORM={sel:null,q:'',arm:''};evFormDraw();evRefresh()}).catch(()=>toast('Evento non salvato. Riprova.'));
+}
+function evRefresh(){evSideKey='';evSidebar();if(typeof plRender==='function')plRender();if(selId)try{renderCard()}catch(_){}}
+document.addEventListener('click',e=>{const b=e.target.closest('#evOpen,[data-act="evopen"]');if(b)evOpenForm()},true);
+loadEventi();
+/*EVENTI-UI-END*/
+
 /* Fuori da Claude non c'è l'archivio condiviso: ne simulo uno che salva nel browser (localStorage). */
 if(!window.claude||!window.claude.use){
   const K='mdv_localdb';let data={};try{data=JSON.parse(localStorage.getItem(K)||'{}')}catch(_){}
@@ -1542,6 +2066,7 @@ if(!window.claude||!window.claude.use){
     db.collection('places').onSnapshot(s=>{st.clear();s.docs.forEach(d=>st.set(d.id,d.data()));refresh()},e=>{if(e&&e.code==='revoked'){db=null}});
     db.collection('custom').onSnapshot(s=>{customs.clear();s.docs.forEach(d=>customs.set(d.id,d.data()));rebuildAll();refresh()},()=>{});
     db.collection('routes').onSnapshot(s=>{routesMap.clear();s.docs.forEach(d=>routesMap.set(d.id,d.data()));plRender();plBadge()},()=>{});
+    db.collection('events').onSnapshot(s=>{evTeam.clear();s.docs.forEach(d=>evTeam.set(d.id,d.data()));try{evRefresh();if($('#evPanel')&&!$('#evPanel').hidden)evFormDraw()}catch(_){}},()=>{});
     db.collection('visits').onSnapshot(s=>{visits.clear();s.docs.forEach(d=>visits.set(d.id,d.data()));resolveNames();refresh()},()=>{});
   }catch(e){}
   if(!db){$('#addBtn').hidden=true}
